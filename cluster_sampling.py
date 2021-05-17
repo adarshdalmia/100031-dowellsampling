@@ -4,9 +4,10 @@ from random import randrange
 
 def dowell_cluster_sampling():
     m, N = dowell_sample_size()
-    Yi_input = input("Enter the population values(space separated): ")
-    Yi = [int(i) for i in Yi_input.split()]
-    M = int(input("Enter the number of clusters: "))
+    Yi_input = input("Enter the population values(comma separated): ")
+    # assumes values are integers
+    Yi = [int(i) for i in Yi_input.split(",")]
+    # M = int(input("Enter the number of clusters: "))
     hi = int(input("Enter the size of a cluster: "))
 
     # Divide the whole populaton into clusters of size "hi"
@@ -15,10 +16,7 @@ def dowell_cluster_sampling():
     # Make sure that clusters are heterogenous by selecting non repeating
     # samples from the cluster.
     ind = [randrange(0, len(clusters)) for _ in range(m)]
-    # while len(ind) <= m:
-    #     ind.add(randrange(0, len(clusters)))
     sampled_clusters = [clusters[i] for i in ind]
-    print(len(sampled_clusters))
     return sampled_clusters
 
 

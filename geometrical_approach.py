@@ -5,8 +5,9 @@ from sample_size import dowell_sample_size
 def dowell_geometrical_function(N=None, n=None, Yi=None):
     if N is None and n is None and Yi is None:
         n, N = dowell_sample_size()
-        Yi_input = input("Enter the population values(space separated): ")
-        Yi = [int(i) for i in Yi_input.split()]
+        Yi_input = input("Enter the population values(comma separated): ")
+        # assumes values are integers
+        Yi = [int(i) for i in Yi_input.split(",")]
 
     # inscribe the circle randomly by starting from a random index
     start = randrange(0, N)

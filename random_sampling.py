@@ -8,36 +8,39 @@ from random import shuffle
 
 def dowell_random_sampling():
     n, N = dowell_sample_size()
-    Yi_input = input("Enter the population values(space separated): ")
-    Yi = [int(i) for i in Yi_input.split()]
+    Yi_input = input("Enter the population values(comma separated): ")
+    # assumes values are integers
+    Yi = [int(i) for i in Yi_input.split(",")]
 
     variance = pvariance(Yi)
     # variance too low
     if variance > 1:
         print("simple random sampling can not be used")
 
-    start = int(input("Enter the initial point: "))
-    method = input(
-        """
-Select either 1, 2, 3 or 4
+    while True:
+        method = input(
+            """
+Select either 1, 2 or 3
 
 Location based:
-    Random Graph(Enter 1)
-    Geometric Approach(Enter 2)
+    Geometric Approach(Enter 1)
 Number/Value based:
-    Mechanical Randomisation(Enter 3)
-    Random Number Generation(Enter 4)
+    Mechanical Randomisation(Enter 2)
+    Random Number Generation(Enter 3)
 """
-    )
+        )
+        if method in ["1", "2", "3"]:
+            break
+        else:
+            print(f"{method} is not one of the options.")
 
     # shuffle Population units
     shuffle(Yi)
 
     func_dict = {
-        "1": dowell_random_graph,
-        "2": dowell_geometrical_function,
-        "3": dowell_random_table,
-        "4": dowell_random_generation,
+        "1": dowell_geometrical_function,
+        "2": dowell_random_table,
+        "3": dowell_random_generation,
     }
     kwargs = {"n": n, "N": N, "Yi": Yi}
     sample_units = func_dict[method](**kwargs)
@@ -46,4 +49,4 @@ Number/Value based:
 
 
 if __name__ == "__main__":
-    dowell_random_sampling()
+    print(dowell_random_sampling())
