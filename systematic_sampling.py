@@ -1,5 +1,5 @@
 from sample_size import dowell_sample_size
-from random import randint, uniform
+from random import randrange, uniform
 
 
 def dowell_systematic_sampling():
@@ -11,13 +11,15 @@ def dowell_systematic_sampling():
     # check if N divides n without remainder
     if N % n == 0:
         k = N // n
-        i = randint(0, k)
+        i = randrange(0, k)
         # select first unit randomly
         Yi = Yi[i:] + Yi[:i]
-        sample_units = [Yi[i] for i in range(0, len(Yi), k)]
+        sample_units = [Yi[ind] for ind in range(i, len(Yi), k)]
     else:
         k = N / n
         i = round(uniform(0, k))
+        if i > N:
+            i -= 1
         # select first unit randomly
         Yi = Yi[i:] + Yi[:i]
         sample_units = [Yi[i] for i in range(0, len(Yi), k)]
