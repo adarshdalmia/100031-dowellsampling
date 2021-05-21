@@ -14,7 +14,7 @@ def dowell_systematic_sampling():
         i = randrange(0, k)
         # select first unit randomly
         Yi = Yi[i:] + Yi[:i]
-        sample_units = [Yi[ind] for ind in range(i, len(Yi), k)]
+        sample_units = [Yi[ind] for ind in range(i, N, k)]
     else:
         k = N / n
         i = round(uniform(0, k))
@@ -22,7 +22,7 @@ def dowell_systematic_sampling():
             i -= 1
         # select first unit randomly
         Yi = Yi[i:] + Yi[:i]
-        sample_units = [Yi[i] for i in range(0, len(Yi), k)]
+        sample_units = [Yi[ind] for ind in range(i, N, k)]
     return sample_units
 
 
