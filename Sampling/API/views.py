@@ -13,3 +13,51 @@ def stratifiedSamplingAPI(request):
         return JsonResponse ({"Answer":fullName})
     else:
         return HttpResponse("Method Not Allowed")   
+
+'''
+Types of sampling
+1. Stratified Random Sampling
+Request
+{
+
+}
+
+Response
+{
+
+}
+
+2. Systematic Sampling
+Request
+{
+
+}
+
+Response
+{
+
+}
+
+3. Purposive Sampling
+Request
+{
+
+}
+
+Response
+{
+
+}
+
+4. Cluster
+Request
+{
+
+}
+
+Response
+{
+
+}
+
+'''
