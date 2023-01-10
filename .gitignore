@@ -1,1 +1,5 @@
 __py_cache__/
+**/Sampling/API/__pycache__
+**/Sampling/Sampling/__pycache__
+**/Sampling/API/functions/__pycache__
+**/Sampling/API/migrations/__pycache__
