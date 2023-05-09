@@ -24,5 +24,3 @@ def dowellPurposiveSampling():
     return sample_values
 
 
-if __name__ == "__main__":
-    print(dowell_purposive_sampling())

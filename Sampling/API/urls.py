@@ -2,5 +2,8 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    path('stratified/', views.stratifiedSamplingAPI),
+    path('stratified/', views.stratified_sampling, name='stratified_sampling'),
+    path('get_data/', views.get_data,name='get_data'),
+    path('systematic/', views.systematic_sampling,name='systematic_sampling'),
+    path('simple_random/', views.simple_random_sampling,name='simple_random_sampling'),
 ]

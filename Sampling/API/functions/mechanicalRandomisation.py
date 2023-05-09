@@ -11,7 +11,6 @@ def dowellRandomTable(N, n, Yi):
         rand_col = randint(1, columns)
         a = f"Enter the number in page: {rand_page} row: {rand_row} column: {rand_col}: "
         random_no = int(input(a))
-
         # check if random_no is greater than N eg if random_no = 0234 and
         # N is 100 pick the first 3 digits (023)
         if random_no > N:
@@ -27,7 +26,3 @@ def dowellRandomTable(N, n, Yi):
             rand_index = random_no
         sampleUnits.append(Yi[rand_index])
     return sampleUnits
-
-
-if __name__ == "__main__":
-    print(dowell_random_table())

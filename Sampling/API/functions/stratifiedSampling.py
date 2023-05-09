@@ -47,68 +47,46 @@ def dowellStratifiedSampling(stratifiedSamplingInput):
   insertedId = stratifiedSamplingInput['insertedId']
   replacement = stratifiedSamplingInput['replacement']
 
-  # Yi = populationUnits(insertedId)  
-  Yi = databaseTwo()
-
+  Yi = [["India","Germany"],["Uttar Pradesh","Lucknow"],["Pune","Munich"],["delhi","kolkata"],["goa","hell"],["tokyo","love"] ]
   N = len(Yi)
-
-  for i in  Yi[0].keys():
+  for i in range(len(Yi[0])):
     stratas.append(i)
-
   k = len(stratas)
-
-  if(replacement == True):
-
+  if replacement == True:
     for i in stratas:
         tempList = []
-        for j in Yi:
-            tempList.append(j[i])
+        for j in range(len(Yi)):
+            tempList.append(Yi[j][i])
         allStratas[i] = tempList
-
-  elif(replacement == False):
+  elif replacement == False:
     for i in stratas:
         tempSet = set()
-        for j in Yi:
-            tempSet.add(j[i])
+        for j in range(len(Yi)):
+            tempSet.add(Yi[j][i])
         allStratas[i] = list(tempSet)
-
   else:
     stratifiedSamplingOutput['message'] = f'{replacement} is not a valid option for replacement, select either True or False'
 
   n = dowellSampleSize(N, e)
-  
-  if(type(n)== int):
-
+  if isinstance(n, int):
     for i in range(1, k+1):
-      
-      if(allocationType == 'equal'):
+      if allocationType == 'equal':
         ni[stratas[i-1]] = dowellEqualAllocation(n, k)
       
-      elif(allocationType == 'proportional'):
+      elif allocationType == 'proportional':
         Ni = len(allStratas[stratas[i-1]])
         ni[stratas[i-1]] = dowellProportionalAllocation(N, n, Ni)
       
       else:
-        stratifiedSamplingOutput['message'] = f'{allocationType} is not a valid allocation type, select a either equal or proportional allocation type'
+        stratifiedSamplingOutput['message'] = f'{allocationType} is not a valid allocation type, select either equal or proportional allocation type'
   
   else:
-     stratifiedSamplingOutput['message'] = n
+    stratifiedSamplingOutput['message'] = n
 
-  simpleRandomSamplingOutput = dowellSimpleRandomSampling(n, N, Yi, method)
-  if(simpleRandomSamplingOutput['status'] == True):
+  simpleRandomSamplingOutput = dowellSimpleRandomSampling(n, N, Yi, samplingType)
+  if simpleRandomSamplingOutput['status'] == True:
     stratifiedSamplingOutput['sampleUnits'] = simpleRandomSamplingOutput['sampleUnits']
   else:
     stratifiedSamplingOutput['message'] = simpleRandomSamplingOutput['message']
 
   return stratifiedSamplingOutput
-
-
-dowellStratifiedSampling({
-  'e': 0.1,
-  'insertedId': "",
-  'samplingType':"",
-  'allocationType': "proportional",
-  'replacement' : True,
-  'method': '',
-  
-})
