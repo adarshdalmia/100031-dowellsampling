@@ -18,8 +18,9 @@ samples (list): List of k unique systematic samples from the population units.
 # from sampleSize import dowellSampleSize
 import random
 
-def dowellSystematicSampling(Yi):
-    N = len(Yi)
+def dowellSystematicSampling(systematicSamplingInput):
+    Yi = systematicSamplingInput['population']
+    N = int(systematicSamplingInput['population_size'])
     e = 0.05 # desired margin of error (5%)
     n = dowellSampleSize(N, e)
     # n = 9

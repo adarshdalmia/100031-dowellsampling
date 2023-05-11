@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Sampling Inputs</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container">
+        <h2>Sampling Inputs</h2>
+        <form id="samplingTypeForm">
+            <div class="form-group">
+                <label for="samplingType">Sampling Type:</label>
+                <select class="form-control" id="samplingType" name="samplingType" onchange="showForm()">
+                    <option value="">Select Sampling Type</option>
+                    <option value="stratified">Stratified Sampling</option>
+                    <option value="systematic">Systematic Sampling</option>
+                    <option value="simple_random">Simple Random Sampling</option>
+                </select>
+            </div>
+        </form>
+
+        <div id="formContainer"></div>
+    </div>
+
+    <script>
+        function showForm() {
+            var selectedSamplingType = document.getElementById("samplingType").value;
+            var formContainer = document.getElementById("formContainer");
+            formContainer.innerHTML = "";
+
+            if (selectedSamplingType === "stratified") {
+                var stratifiedForm = document.createElement("form");
+                stratifiedForm.setAttribute("method", "POST");
+                stratifiedForm.setAttribute("action", "{% url 'stratified_sampling' %}");
+
+                var csrfToken = document.createElement("input");
+                csrfToken.setAttribute("type", "hidden");
+                csrfToken.setAttribute("name", "csrfmiddlewaretoken");
+                csrfToken.value = "{{ csrf_token }}";
+
+                var allocationTypeLabel = document.createElement("label");
+                allocationTypeLabel.setAttribute("for", "allocationType");
+                allocationTypeLabel.innerText = "Allocation Type:";
+
+                var allocationTypeSelect = document.createElement("select");
+                allocationTypeSelect.setAttribute("id", "allocationType");
+                allocationTypeSelect.setAttribute("name", "allocationType");
+                allocationTypeSelect.required = true;
+                
+                // Option for equal allocation
+                var equalOption = document.createElement("option");
+                equalOption.setAttribute("value", "equal");
+                equalOption.innerText = "Equal Allocation";
+                allocationTypeSelect.appendChild(equalOption);
+                
+                // Option for proportional allocation
+                var proportionalOption = document.createElement("option");
+                proportionalOption.setAttribute("value", "proportional");
+                proportionalOption.innerText = "Proportional Allocation";
+                allocationTypeSelect.appendChild(proportionalOption);
+
+                var samplingTypeLabel = document.createElement("label");
+                samplingTypeLabel.setAttribute("for", "samplingType");
+                samplingTypeLabel.innerText = "Sampling Type:";
+
+                var samplingTypeInput = document.createElement("input");
+                samplingTypeInput.setAttribute("type", "text");
+                samplingTypeInput.setAttribute("id", "samplingType");
+                samplingTypeInput.setAttribute("name", "samplingType");
+                samplingTypeInput.required = true;
+
+                var insertedIdLabel = document.createElement("label");
+                insertedIdLabel.setAttribute("for", "insertedId");
+                insertedIdLabel.innerText = "Inserted ID:";
+
+                var insertedIdInput = document.createElement("input");
+                insertedIdInput.setAttribute("type", "text");
+                insertedIdInput.setAttribute("id", "insertedId");
+                insertedIdInput.setAttribute("name", "insertedId");
+                insertedIdInput.required = true;
+
+                var replacementLabel = document.createElement("label");
+                replacementLabel.setAttribute("for", "replacement");
+                replacementLabel.innerText = "Replacement:";
+
+                var replacementInput = document.createElement("input");
+                replacementInput.setAttribute("type", "checkbox");
+                replacementInput.setAttribute("id", "replacement");
+                replacementInput.setAttribute("name", "replacement");
+                replacementInput.setAttribute("value", "true");
+
+                var populationSizeLabel = document.createElement("label");
+                populationSizeLabel.setAttribute("for", "populationSize");
+                populationSizeLabel.innerText = "Population Size:";
+
+                var populationSizeInput = document.createElement("input");
+                populationSizeInput.setAttribute("type", "text");
+                populationSizeInput.setAttribute("id", "populationSize");
+                populationSizeInput.setAttribute("name", "populationSize");
+                populationSizeInput.required = true;
+
+                var submitButton = document.createElement("input");
+                submitButton.setAttribute("type", "submit");
+                submitButton.setAttribute("value", "Submit");
+                submitButton.classList.add("btn", "btn-primary");
+
+                stratifiedForm.appendChild(csrfToken);
+                stratifiedForm.appendChild(allocationTypeLabel);
+                stratifiedForm.appendChild(allocationTypeSelect);
+                stratifiedForm.appendChild(document.createElement("br"));
+                stratifiedForm.appendChild(samplingTypeLabel);
+                stratifiedForm.appendChild(samplingTypeInput);
+                stratifiedForm.appendChild(document.createElement("br"));
+                stratifiedForm.appendChild(insertedIdLabel);
+                stratifiedForm.appendChild(insertedIdInput);
+                stratifiedForm.appendChild(document.createElement("br"));
+                stratifiedForm.appendChild(replacementLabel);
+                stratifiedForm.appendChild(replacementInput);
+                stratifiedForm.appendChild(document.createElement("br"));
+                stratifiedForm.appendChild(populationSizeLabel);
+                stratifiedForm.appendChild(populationSizeInput);
+                stratifiedForm.appendChild(document.createElement("br"));
+                stratifiedForm.appendChild(submitButton);
+
+                formContainer.appendChild(stratifiedForm);
+            } // ...
+
+            else if (selectedSamplingType === "systematic") {
+                var systematicForm = document.createElement("form");
+                systematicForm.setAttribute("method", "POST");
+                systematicForm.setAttribute("action", "{% url 'systematic_sampling' %}");
+            
+                var csrfToken = document.createElement("input");
+                csrfToken.setAttribute("type", "hidden");
+                csrfToken.setAttribute("name", "csrfmiddlewaretoken");
+                csrfToken.value = "{{ csrf_token }}";
+            
+               
+            
+                var populationSizeLabel = document.createElement("label");
+                populationSizeLabel.setAttribute("for", "population_size");
+                populationSizeLabel.innerText = "Population Size:";
+            
+                var populationSizeInput = document.createElement("input");
+                populationSizeInput.setAttribute("type", "text");
+                populationSizeInput.setAttribute("id", "population_size");
+                populationSizeInput.setAttribute("name", "population_size");
+                populationSizeInput.required = true;
+            
+                var submitButton = document.createElement("input");
+                submitButton.setAttribute("type", "submit");
+                submitButton.setAttribute("value", "Submit");
+                submitButton.classList.add("btn", "btn-primary");
+            
+                systematicForm.appendChild(csrfToken);
+                
+                systematicForm.appendChild(populationSizeLabel);
+                systematicForm.appendChild(populationSizeInput);
+                systematicForm.appendChild(document.createElement("br"));
+                systematicForm.appendChild(submitButton);
+            
+                formContainer.appendChild(systematicForm);
+            }
+            
+            // ...
+            
+             // ...
+
+else if (selectedSamplingType === "simple_random") {
+  var simpleRandomForm = document.createElement("form");
+  simpleRandomForm.setAttribute("method", "POST");
+  simpleRandomForm.setAttribute("action", "{% url 'simple_random_sampling' %}");
+
+  var csrfToken = document.createElement("input");
+  csrfToken.setAttribute("type", "hidden");
+  csrfToken.setAttribute("name", "csrfmiddlewaretoken");
+  csrfToken.value = "{{ csrf_token }}";
+
+
+  var NLabel = document.createElement("label");
+  NLabel.setAttribute("for", "N");
+  NLabel.innerText = "population_size:";
+
+  var NInput = document.createElement("input");
+  NInput.setAttribute("type", "text");
+  NInput.setAttribute("id", "N");
+  NInput.setAttribute("name", "N");
+  NInput.required = true;
+
+  var eLabel = document.createElement("label");
+  eLabel.setAttribute("for", "e");
+  eLabel.innerText = "e:";
+
+  var eInput = document.createElement("input");
+  eInput.setAttribute("type", "text");
+  eInput.setAttribute("id", "e");
+  eInput.setAttribute("name", "e");
+  eInput.required = true;
+
+  var methodLabel = document.createElement("label");
+  methodLabel.setAttribute("for", "method");
+  methodLabel.innerText = "Method:";
+
+  var methodInput = document.createElement("input");
+  methodInput.setAttribute("type", "text");
+  methodInput.setAttribute("id", "method");
+  methodInput.setAttribute("name", "method");
+  methodInput.required = true;
+
+  var submitButton = document.createElement("input");
+  submitButton.setAttribute("type", "submit");
+  submitButton.setAttribute("value", "Submit");
+  submitButton.classList.add("btn", "btn-primary");
+
+  simpleRandomForm.appendChild(csrfToken);
+  
+  simpleRandomForm.appendChild(NLabel);
+  simpleRandomForm.appendChild(NInput);
+  simpleRandomForm.appendChild(document.createElement("br"));
+  simpleRandomForm.appendChild(eLabel);
+  simpleRandomForm.appendChild(eInput);
+  simpleRandomForm.appendChild(document.createElement("br"));
+  simpleRandomForm.appendChild(methodLabel);
+  simpleRandomForm.appendChild(methodInput);
+  simpleRandomForm.appendChild(document.createElement("br"));
+  simpleRandomForm.appendChild(submitButton);
+
+  formContainer.appendChild(simpleRandomForm);
+}
+
+// ...
+
+        }
+    </script>
+
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+</body>
+</html>

@@ -5,7 +5,11 @@ from API.functions.mechanicalRandomisation import dowellRandomTable
 from statistics import pvariance
 from random import shuffle
 
-def dowellSimpleRandomSampling(n, N, Yi, method):
+def dowellSimpleRandomSampling(simpleRandomSamplingInput):
+    Yi = simpleRandomSamplingInput['Yi']
+    N = simpleRandomSamplingInput['N']
+    n = simpleRandomSamplingInput['n']
+    method = simpleRandomSamplingInput['method']
     print(Yi)
     lengths = [len(item) for sublist in Yi for item in sublist]
     variance = pvariance(lengths)

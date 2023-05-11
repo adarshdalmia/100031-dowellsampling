@@ -1,3 +1,4 @@
+from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse, HttpResponse
 import json
@@ -33,35 +34,85 @@ def get_YI_data():
 
 def stratified_sampling(request):
     # Get input parameters from POST request
-    Yi = get_YI_data()
-    stratifiedSamplingInput = {
-    'e': 0.1,
-    'allocationType': 'proportional',
-    'samplingType': 'geometricalApproach',
-    'insertedId': 'some_id',
-    'replacement': True,
-    'Yi': Yi,
-    }
-    result = dowellStratifiedSampling(stratifiedSamplingInput)
+    if request.method == 'POST':
+        allocation_type = request.POST.get('allocationType')
+        sampling_type = request.POST.get('samplingType')
+        inserted_id = request.POST.get('insertedId')
+        replacement = request.POST.get('replacement') == 'true'
+        populationSize = request.POST.get('populationSize')
+
+
+        # Retrieve Yi data (you need to implement this)
+        Yi = get_YI_data()
+
+        stratifiedSamplingInput = {
+            'e': 0.1,
+            'allocationType': allocation_type,
+            'samplingType': sampling_type,
+            'insertedId': inserted_id,
+            'replacement': replacement,
+            'Yi': Yi,
+            'populationSize': populationSize
+        }
+
+        # Call the stratified_sampling API function
+        result = dowellStratifiedSampling(stratifiedSamplingInput)
+    else:
+        result = {
+            'error': 'Invalid request method'
+        }
     return JsonResponse(result)
 
 def systematic_sampling(request):
-    Yi = get_YI_data()
-    samples = dowellSystematicSampling(Yi)
-    response = {
+    # Retrieve user input for Yi and population_size
+    if request.method == 'POST':
+        Yi = get_YI_data()
+        population_size = request.POST.get('population_size')
+        systematicSamplingInput = {
+            'population': Yi,
+            'population_size': population_size
+        }
+        # Convert population_size to an integer
+        population_size = int(population_size)
+
+        # Perform systematic sampling using Yi and population_size
+        samples = dowellSystematicSampling(systematicSamplingInput)
+
+        # Prepare the response
+        response = {
             'samples': samples
+        }
+    else:
+        response = {
+            'error': 'Invalid request method'
         }
     return JsonResponse(response)
 
+
 def simple_random_sampling(request):
-    Yi = get_YI_data()
-    e = 0.05 # desired margin of error (5%)
-    N = len(Yi)
-    n = dowellSampleSize(N, e)
-    method = 'geometricalApproach'
-    samples = dowellSimpleRandomSampling(n,N,Yi,method)
+    if request.method == 'POST':
+        Yi = get_YI_data()
+        e = request.POST.get('e')
+        N = request.POST.get('N')
+        n = dowellSampleSize(int(N),float(e))
+        method = request.POST.get('method')
+        simpleRandomSamplingInput = {
+            'Yi': Yi,
+            'N': int(N),
+            'n': n,
+            'method': method
+        }
+        samples = dowellSimpleRandomSampling(simpleRandomSamplingInput)
+        response = {
+            'samples': samples
+        }
     response = samples
     return JsonResponse(response)
+
+
+def sampling_input(request):
+    return render(request, 'sampling_inputs.html')
+
 '''
 Types of sampling
 1. Stratified Random Sampling

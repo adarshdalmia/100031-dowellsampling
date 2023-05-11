@@ -48,7 +48,7 @@ def dowellStratifiedSampling(stratifiedSamplingInput):
   replacement = stratifiedSamplingInput['replacement']
 
   Yi = stratifiedSamplingInput['Yi']
-  N = len(Yi)
+  N = int(stratifiedSamplingInput['populationSize'])
   for i in range(len(Yi[0])):
     stratas.append(i)
   k = len(stratas)
