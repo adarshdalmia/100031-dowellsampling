@@ -47,7 +47,7 @@ def dowellStratifiedSampling(stratifiedSamplingInput):
   insertedId = stratifiedSamplingInput['insertedId']
   replacement = stratifiedSamplingInput['replacement']
 
-  Yi = [["India","Germany"],["Uttar Pradesh","Lucknow"],["Pune","Munich"],["delhi","kolkata"],["goa","hell"],["tokyo","love"] ]
+  Yi = stratifiedSamplingInput['Yi']
   N = len(Yi)
   for i in range(len(Yi[0])):
     stratas.append(i)

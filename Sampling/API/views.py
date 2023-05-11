@@ -36,7 +36,7 @@ def stratified_sampling(request):
     Yi = get_YI_data()
     stratifiedSamplingInput = {
     'e': 0.1,
-    'allocationType': 'equal',
+    'allocationType': 'proportional',
     'samplingType': 'geometricalApproach',
     'insertedId': 'some_id',
     'replacement': True,
