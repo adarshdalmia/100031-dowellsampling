@@ -82,8 +82,13 @@ def dowellStratifiedSampling(stratifiedSamplingInput):
   
   else:
     stratifiedSamplingOutput['message'] = n
-
-  simpleRandomSamplingOutput = dowellSimpleRandomSampling(n, N, Yi, samplingType)
+  simpleRandomSamplingInput = {
+            'Yi': Yi,
+            'N': int(N),
+            'n': n,
+            'method': stratifiedSamplingInput['samplingType'],
+        }
+  simpleRandomSamplingOutput = dowellSimpleRandomSampling(simpleRandomSamplingInput)
   if simpleRandomSamplingOutput['status'] == True:
     stratifiedSamplingOutput['sampleUnits'] = simpleRandomSamplingOutput['sampleUnits']
   else:
