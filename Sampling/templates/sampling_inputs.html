@@ -15,6 +15,7 @@
                     <option value="stratified">Stratified Sampling</option>
                     <option value="systematic">Systematic Sampling</option>
                     <option value="simple_random">Simple Random Sampling</option>
+                    <option value="cluster_sampling">Cluster Sampling</option>
                 </select>
             </div>
         </form>
@@ -63,11 +64,28 @@
                 samplingTypeLabel.setAttribute("for", "samplingType");
                 samplingTypeLabel.innerText = "Sampling Type:";
 
-                var samplingTypeInput = document.createElement("input");
-                samplingTypeInput.setAttribute("type", "text");
-                samplingTypeInput.setAttribute("id", "samplingType");
-                samplingTypeInput.setAttribute("name", "samplingType");
-                samplingTypeInput.required = true;
+                var samplingTypeSelect = document.createElement("select");
+                samplingTypeSelect.setAttribute("id", "samplingType");
+                samplingTypeSelect.setAttribute("name", "samplingType");
+                samplingTypeSelect.required = true;
+                
+                // Option for geometrical approach
+                var geometricOption = document.createElement("option");
+                geometricOption.setAttribute("value", "geometricalApproach");
+                geometricOption.innerText = "Geometrical Approach";
+                samplingTypeSelect.appendChild(geometricOption);
+                
+                // Option for mechanical randomization
+                var mechanicalOption = document.createElement("option");
+                mechanicalOption.setAttribute("value", "mechanicalRandomisation");
+                mechanicalOption.innerText = "Mechanical Randomization";
+                samplingTypeSelect.appendChild(mechanicalOption);
+                
+                // Option for random number generation
+                var randomOption = document.createElement("option");
+                randomOption.setAttribute("value", "randomNumberGeneration");
+                randomOption.innerText = "Random Number Generation";
+                samplingTypeSelect.appendChild(randomOption);
 
                 var insertedIdLabel = document.createElement("label");
                 insertedIdLabel.setAttribute("for", "insertedId");
@@ -109,7 +127,7 @@
                 stratifiedForm.appendChild(allocationTypeSelect);
                 stratifiedForm.appendChild(document.createElement("br"));
                 stratifiedForm.appendChild(samplingTypeLabel);
-                stratifiedForm.appendChild(samplingTypeInput);
+                stratifiedForm.appendChild(samplingTypeSelect);
                 stratifiedForm.appendChild(document.createElement("br"));
                 stratifiedForm.appendChild(insertedIdLabel);
                 stratifiedForm.appendChild(insertedIdInput);
@@ -123,7 +141,10 @@
                 stratifiedForm.appendChild(submitButton);
 
                 formContainer.appendChild(stratifiedForm);
-            } // ...
+            }
+  
+
+// ...
 
             else if (selectedSamplingType === "systematic") {
                 var systematicForm = document.createElement("form");
@@ -166,68 +187,158 @@
             
              // ...
 
-else if (selectedSamplingType === "simple_random") {
-  var simpleRandomForm = document.createElement("form");
-  simpleRandomForm.setAttribute("method", "POST");
-  simpleRandomForm.setAttribute("action", "{% url 'simple_random_sampling' %}");
+             else if (selectedSamplingType === "simple_random") {
+                var simpleRandomForm = document.createElement("form");
+                simpleRandomForm.setAttribute("method", "POST");
+                simpleRandomForm.setAttribute("action", "{% url 'simple_random_sampling' %}");
+            
+                var csrfToken = document.createElement("input");
+                csrfToken.setAttribute("type", "hidden");
+                csrfToken.setAttribute("name", "csrfmiddlewaretoken");
+                csrfToken.value = "{{ csrf_token }}";
+            
+                var NLabel = document.createElement("label");
+                NLabel.setAttribute("for", "N");
+                NLabel.innerText = "Population Size:";
+            
+                var NInput = document.createElement("input");
+                NInput.setAttribute("type", "text");
+                NInput.setAttribute("id", "N");
+                NInput.setAttribute("name", "N");
+                NInput.required = true;
+            
+                var eLabel = document.createElement("label");
+                eLabel.setAttribute("for", "e");
+                eLabel.innerText = "e:";
+            
+                var eInput = document.createElement("input");
+                eInput.setAttribute("type", "text");
+                eInput.setAttribute("id", "e");
+                eInput.setAttribute("name", "e");
+                eInput.required = true;
+            
+                var methodLabel = document.createElement("label");
+                methodLabel.setAttribute("for", "method");
+                methodLabel.innerText = "Method:";
+            
+                var methodSelect = document.createElement("select");
+                methodSelect.setAttribute("id", "method");
+                methodSelect.setAttribute("name", "method");
+                methodSelect.required = true;
+                
+                // Option for geometrical approach
+                var geometricOption = document.createElement("option");
+                geometricOption.setAttribute("value", "geometricalApproach");
+                geometricOption.innerText = "Geometrical Approach";
+                methodSelect.appendChild(geometricOption);
+                
+                // Option for mechanical randomization
+                var mechanicalOption = document.createElement("option");
+                mechanicalOption.setAttribute("value", "mechanicalRandomisation");
+                mechanicalOption.innerText = "Mechanical Randomization";
+                methodSelect.appendChild(mechanicalOption);
+                
+                // Option for random number generation
+                var randomOption = document.createElement("option");
+                randomOption.setAttribute("value", "randomNumberGeneration");
+                randomOption.innerText = "Random Number Generation";
+                methodSelect.appendChild(randomOption);
+            
+                var submitButton = document.createElement("input");
+                submitButton.setAttribute("type", "submit");
+                submitButton.setAttribute("value", "Submit");
+                submitButton.classList.add("btn", "btn-primary");
+            
+                simpleRandomForm.appendChild(csrfToken);
+                simpleRandomForm.appendChild(NLabel);
+                simpleRandomForm.appendChild(NInput);
+                simpleRandomForm.appendChild(document.createElement("br"));
+                simpleRandomForm.appendChild(eLabel);
+                simpleRandomForm.appendChild(eInput);
+                simpleRandomForm.appendChild(document.createElement("br"));
+                simpleRandomForm.appendChild(methodLabel);
+                simpleRandomForm.appendChild(methodSelect);
+                simpleRandomForm.appendChild(document.createElement("br"));
+                simpleRandomForm.appendChild(submitButton);
+            
+                formContainer.appendChild(simpleRandomForm);
+            }
+            
+            else if (selectedSamplingType === "cluster_sampling") {
 
-  var csrfToken = document.createElement("input");
-  csrfToken.setAttribute("type", "hidden");
-  csrfToken.setAttribute("name", "csrfmiddlewaretoken");
-  csrfToken.value = "{{ csrf_token }}";
-
-
-  var NLabel = document.createElement("label");
-  NLabel.setAttribute("for", "N");
-  NLabel.innerText = "population_size:";
-
-  var NInput = document.createElement("input");
-  NInput.setAttribute("type", "text");
-  NInput.setAttribute("id", "N");
-  NInput.setAttribute("name", "N");
-  NInput.required = true;
-
-  var eLabel = document.createElement("label");
-  eLabel.setAttribute("for", "e");
-  eLabel.innerText = "e:";
-
-  var eInput = document.createElement("input");
-  eInput.setAttribute("type", "text");
-  eInput.setAttribute("id", "e");
-  eInput.setAttribute("name", "e");
-  eInput.required = true;
-
-  var methodLabel = document.createElement("label");
-  methodLabel.setAttribute("for", "method");
-  methodLabel.innerText = "Method:";
-
-  var methodInput = document.createElement("input");
-  methodInput.setAttribute("type", "text");
-  methodInput.setAttribute("id", "method");
-  methodInput.setAttribute("name", "method");
-  methodInput.required = true;
-
-  var submitButton = document.createElement("input");
-  submitButton.setAttribute("type", "submit");
-  submitButton.setAttribute("value", "Submit");
-  submitButton.classList.add("btn", "btn-primary");
-
-  simpleRandomForm.appendChild(csrfToken);
-  
-  simpleRandomForm.appendChild(NLabel);
-  simpleRandomForm.appendChild(NInput);
-  simpleRandomForm.appendChild(document.createElement("br"));
-  simpleRandomForm.appendChild(eLabel);
-  simpleRandomForm.appendChild(eInput);
-  simpleRandomForm.appendChild(document.createElement("br"));
-  simpleRandomForm.appendChild(methodLabel);
-  simpleRandomForm.appendChild(methodInput);
-  simpleRandomForm.appendChild(document.createElement("br"));
-  simpleRandomForm.appendChild(submitButton);
-
-  formContainer.appendChild(simpleRandomForm);
-}
-
+                var clusterForm = document.createElement("form");
+                clusterForm.setAttribute("method", "POST");
+                clusterForm.setAttribute("action", "{% url 'cluster_sampling' %}");
+        
+                var csrfToken = document.createElement("input");
+                csrfToken.setAttribute("type", "hidden");
+                csrfToken.setAttribute("name", "csrfmiddlewaretoken");
+                csrfToken.value = "{{ csrf_token }}";
+        
+        
+                var NLabel = document.createElement("label");
+                NLabel.setAttribute("for", "N");
+                NLabel.innerText = "population_size:";
+        
+                var NInput = document.createElement("input");
+                NInput.setAttribute("type", "text");
+                NInput.setAttribute("id", "N");
+                NInput.setAttribute("name", "N");
+                NInput.required = true;
+        
+                var eLabel = document.createElement("label");
+                eLabel.setAttribute("for", "e");
+                eLabel.innerText = "e:";
+        
+                var eInput = document.createElement("input");
+                eInput.setAttribute("type", "text");
+                eInput.setAttribute("id", "e");
+                eInput.setAttribute("name", "e");
+                eInput.required = true;
+        
+                var MLabel = document.createElement("label");
+                MLabel.setAttribute("for", "M");
+                MLabel.innerText = "M:";
+        
+                var MInput = document.createElement("input");
+                MInput.setAttribute("type", "text");
+                MInput.setAttribute("id", "M");
+                MInput.setAttribute("name", "M");
+                MInput.required = true;        
+        
+                var hiLabel = document.createElement("label");
+                hiLabel.setAttribute("for", "hi");
+                hiLabel.innerText = "hi:";
+        
+                var hiInput = document.createElement("input");
+                hiInput.setAttribute("type", "text");
+                hiInput.setAttribute("id", "hi");
+                hiInput.setAttribute("name", "hi");
+                hiInput.required = true;            
+        
+                var submitButton = document.createElement("input");
+                submitButton.setAttribute("type", "submit");
+                submitButton.setAttribute("value", "Submit");
+                submitButton.classList.add("btn", "btn-primary");
+        
+                clusterForm.appendChild(csrfToken);
+        
+                clusterForm.appendChild(NLabel);
+                clusterForm.appendChild(NInput);
+                clusterForm.appendChild(document.createElement("br"));
+                clusterForm.appendChild(eLabel);
+                clusterForm.appendChild(eInput);
+                clusterForm.appendChild(document.createElement("br"));
+                clusterForm.appendChild(MLabel);            
+                clusterForm.appendChild(MInput);            
+                clusterForm.appendChild(document.createElement("br"));
+                clusterForm.appendChild(hiLabel);            
+                clusterForm.appendChild(hiInput);
+                clusterForm.appendChild(document.createElement("br"));
+                clusterForm.appendChild(submitButton);
+        
+                formContainer.appendChild(clusterForm);
+                }
 // ...
 
         }

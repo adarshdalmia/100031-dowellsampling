@@ -2,15 +2,15 @@ from random import randint
 
 def dowellRandomTable(N, n, Yi):
     sampleUnits = []
-    page_no = int(input("Enter the number of pages: "))
-    rows = int(input("Enter the number of rows: "))
-    columns = int(input("Enter the number of columns: "))
+    page_no = 10
+    rows = 10
+    columns = 10
     for _ in range(n):
         rand_page = randint(1, page_no)
         rand_row = randint(1, rows)
         rand_col = randint(1, columns)
         a = f"Enter the number in page: {rand_page} row: {rand_row} column: {rand_col}: "
-        random_no = int(input(a))
+        random_no = 6
         # check if random_no is greater than N eg if random_no = 0234 and
         # N is 100 pick the first 3 digits (023)
         if random_no > N:
