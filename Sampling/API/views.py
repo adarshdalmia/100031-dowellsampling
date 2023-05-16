@@ -8,6 +8,7 @@ from API.functions.sampleSize import dowellSampleSize
 from API.functions.systematic_sampling import dowellSystematicSampling
 from API.functions.simpleRandomSampling import dowellSimpleRandomSampling
 from API.functions.clusterSampling import dowellClusterSampling
+from API.functions.purposiveSampling import dowellPurposiveSampling
 
 
 @csrf_exempt
@@ -132,6 +133,28 @@ def cluster_sampling(request):
         }
     response = samples
     return JsonResponse(response, safe=False)
+
+def purposive_sampling(request):
+    if request.method == 'POST':
+        Yi = get_YI_data()
+        new_yi = sum(Yi, [])
+        unit = request.POST.get('unit')
+        e = request.POST.get('e')
+        N = request.POST.get('N')
+
+        purposiveSamplingInput = {
+            'Yi': new_yi,
+            'unit': unit,
+            'e': float(e),
+            'N': int(N),
+        }
+
+        samples = dowellPurposiveSampling(purposiveSamplingInput)
+        response = {
+            'samples': samples
+        }
+        return JsonResponse(response, safe=False)
+
 def sampling_input(request):
     return render(request, 'sampling_inputs.html')
 

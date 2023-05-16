@@ -8,4 +8,5 @@ urlpatterns = [
     path('simple_random/', views.simple_random_sampling,name='simple_random_sampling'),
     path('sampling_input/', views.sampling_input,name='sampling_input'),
     path('cluster_sampling/', views.cluster_sampling,name='cluster_sampling'),
+    path('purposive_sampling/', views.purposive_sampling,name='purposive_sampling'),
 ]

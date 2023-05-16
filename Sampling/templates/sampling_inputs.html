@@ -16,6 +16,7 @@
                     <option value="systematic">Systematic Sampling</option>
                     <option value="simple_random">Simple Random Sampling</option>
                     <option value="cluster_sampling">Cluster Sampling</option>
+                    <option value="purposive"> purposive sampling</option>
                 </select>
             </div>
         </form>
@@ -339,7 +340,68 @@
         
                 formContainer.appendChild(clusterForm);
                 }
+else if (selectedSamplingType === "purposive") {
+    var purposiveForm = document.createElement("form");
+    purposiveForm.setAttribute("method", "POST");
+    purposiveForm.setAttribute("action", "{% url 'purposive_sampling' %}");
+
+    var csrfToken = document.createElement("input");
+    csrfToken.setAttribute("type", "hidden");
+    csrfToken.setAttribute("name", "csrfmiddlewaretoken");
+    csrfToken.value = "{{ csrf_token }}";
+
+    var unitLabel = document.createElement("label");
+    unitLabel.setAttribute("for", "unit");
+    unitLabel.innerText = "Unit:";
+
+    var unitInput = document.createElement("input");
+    unitInput.setAttribute("type", "text");
+    unitInput.setAttribute("id", "unit");
+    unitInput.setAttribute("name", "unit");
+    unitInput.required = true;
+
+    var eLabel = document.createElement("label");
+    eLabel.setAttribute("for", "e");
+    eLabel.innerText = "e:";
+
+    var eInput = document.createElement("input");
+    eInput.setAttribute("type", "text");
+    eInput.setAttribute("id", "e");
+    eInput.setAttribute("name", "e");
+    eInput.required = true;
+
+    var NLabel = document.createElement("label");
+    NLabel.setAttribute("for", "N");
+    NLabel.innerText = "N:";
+
+    var NInput = document.createElement("input");
+    NInput.setAttribute("type", "text");
+    NInput.setAttribute("id", "N");
+    NInput.setAttribute("name", "N");
+    NInput.required = true;
+
+    var submitButton = document.createElement("input");
+    submitButton.setAttribute("type", "submit");
+    submitButton.setAttribute("value", "Submit");
+    submitButton.classList.add("btn", "btn-primary");
+
+    purposiveForm.appendChild(csrfToken);
+    purposiveForm.appendChild(unitLabel);
+    purposiveForm.appendChild(unitInput);
+    purposiveForm.appendChild(document.createElement("br"));
+    purposiveForm.appendChild(eLabel);
+    purposiveForm.appendChild(eInput);
+    purposiveForm.appendChild(document.createElement("br"));
+    purposiveForm.appendChild(NLabel);
+    purposiveForm.appendChild(NInput);
+    purposiveForm.appendChild(document.createElement("br"));
+    purposiveForm.appendChild(submitButton);
+
+    formContainer.appendChild(purposiveForm);
+}
+
 // ...
+
 
         }
     </script>

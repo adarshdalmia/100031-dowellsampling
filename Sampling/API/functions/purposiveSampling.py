@@ -1,10 +1,13 @@
 from API.functions.sampleSize import dowellSampleSize
 
-def dowellPurposiveSampling(Yi, unit):
-    N = len(Yi)
-    n = dowellSampleSize(N, 0.05)
+def dowellPurposiveSampling(purposeiveSamplingInput):
+    N = purposeiveSamplingInput['N']
+    e = purposeiveSamplingInput['e']
+    n = dowellSampleSize(N, e)
+    Yi = purposeiveSamplingInput['Yi']
+    unit = purposeiveSamplingInput['unit']
+    unit = unit.split(",")
     print(n)
-
     sample_values = []
     unit_copy = unit[:]  # Make a copy of the unit list
     while len(sample_values) < n:
@@ -50,7 +53,7 @@ unit = [
     "Hamburg,Delhi",
 ]
 
-sampled_values = dowellPurposiveSampling(Yi, unit)
-print("Sampled Values:")
-for values in sampled_values:
-    print(values)
+# sampled_values = dowellPurposiveSampling(Yi, unit)
+# print("Sampled Values:")
+# for values in sampled_values:
+#     print(values)
