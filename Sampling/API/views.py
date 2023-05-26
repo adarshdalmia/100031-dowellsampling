@@ -14,103 +14,123 @@ from API.functions.purposiveSampling import dowellPurposiveSampling
 
 @csrf_exempt
 def get_data(request):
-    data = {
-        "finalOutput": [
-            ["India", "Germany"],
-            ["Uttar Pradesh", "Georgia"],
-            ["Pune", "Munich"],
-            ["Mumbai", "Berlin"],
-            ["Delhi", "Hamburg"],
-            ["Kolkata", "Hamburg"],
-            ["MP", "Hamburg"],
-        ]
-    }
-    return JsonResponse(data)
+    header = { 'content-type': 'application/json'}
+    data = json.dumps({
+   "insertedId":"646d188771d319c4cf8e182a"
+})
+    url = 'http://100061.pythonanywhere.com/function/'
+    response = requests.request("POSR",url, data=data, headers=header).json()
+    return JsonResponse(response)
 
+@csrf_exempt
 def get_YI_data():
-    api_url = 'http://localhost:8000/API/get_data/'
-    response = requests.get(api_url)
-    if response.status_code == 200:
-        json_data = response.json()
-        data = json_data['finalOutput']
+    header = { 'content-type': 'application/json'}
+    data = json.dumps({
+   "insertedId":"646d188771d319c4cf8e182a"
+})
+    url = 'http://100061.pythonanywhere.com/function/'
+    response = requests.request("POST",url, data=data, headers=header).json()
+    data = response['finalOutput']
     return data
 
-def stratified_sampling(request):
-    # Get input parameters from POST request
-    if request.method == 'POST':
-        allocation_type = request.POST.get('allocationType')
-        sampling_type = request.POST.get('samplingType')
-        inserted_id = request.POST.get('insertedId')
-        replacement = request.POST.get('replacement') == 'true'
-        populationSize = request.POST.get('populationSize')
-
-
-        # Retrieve Yi data (you need to implement this)
-        Yi = get_YI_data()
-
-        stratifiedSamplingInput = {
-            'e': 0.1,
-            'allocationType': allocation_type,
-            'samplingType': sampling_type,
-            'insertedId': inserted_id,
-            'replacement': replacement,
-            'Yi': Yi,
-            'populationSize': populationSize
-        }
-
-        # Call the stratified_sampling API function
-        result = dowellStratifiedSampling(stratifiedSamplingInput)
-    else:
-        result = {
-            'error': 'Invalid request method'
-        }
-    return JsonResponse(result)
-
 def systematic_sampling(request):
-    # Retrieve user input for Yi and population_size
     if request.method == 'POST':
-        Yi = get_YI_data()
+        data = request.POST.get('data')
+        inserted_id = request.POST.get('insertedId')
         population_size = request.POST.get('population_size')
+
+        if data == 'api':
+            Yi = get_YI_data()
+        elif data == 'upload':
+            uploaded_file = request.FILES.get('file')
+            if uploaded_file:
+                df = pd.read_excel(uploaded_file)
+                list_of_lists = df.values.T.tolist()
+                Yi = list_of_lists
+            else:
+                return JsonResponse({'error': 'No file uploaded.'})
+        
         systematicSamplingInput = {
+            'insertedId': inserted_id,
             'population': Yi,
             'population_size': population_size
         }
-        # Convert population_size to an integer
-        population_size = int(population_size)
 
-        # Perform systematic sampling using Yi and population_size
         samples = dowellSystematicSampling(systematicSamplingInput)
-
-        # Prepare the response
         response = {
             'samples': samples
         }
-    else:
-        response = {
-            'error': 'Invalid request method'
-        }
-    return JsonResponse(response)
-
+        
+        return JsonResponse(response, safe=False)
 
 def simple_random_sampling(request):
     if request.method == 'POST':
-        Yi = get_YI_data()
-        e = request.POST.get('e')
+        data = request.POST.get('data')
+        inserted_id = request.POST.get('insertedId')
         N = request.POST.get('N')
-        n = dowellSampleSize(int(N),float(e))
+        e = request.POST.get('e')
         method = request.POST.get('method')
+
+        if data == 'api':
+            Yi = get_YI_data()
+        elif data == 'upload':
+            uploaded_file = request.FILES.get('file')
+            if uploaded_file:
+                df = pd.read_excel(uploaded_file)
+                list_of_lists = df.values.T.tolist()
+                Yi = list_of_lists
+            else:
+                return JsonResponse({'error': 'No file uploaded.'})
+        
         simpleRandomSamplingInput = {
+            'insertedId': inserted_id,
             'Yi': Yi,
             'N': int(N),
-            'n': n,
+            'e': float(e),
             'method': method
         }
+
         samples = dowellSimpleRandomSampling(simpleRandomSamplingInput)
         response = {
             'samples': samples
         }
-    response = samples
-    return JsonResponse(response)
+        
+        return JsonResponse(response, safe=False)
+
+def purposive_sampling(request):
+    if request.method == 'POST':
+        data = request.POST.get('data')
+        inserted_id = request.POST.get('insertedId')
+        unit = request.POST.get('unit')
+        e = request.POST.get('e')
+        N = request.POST.get('N')
+
+        if data == 'api':
+            Yi = get_YI_data()
+        elif data == 'upload':
+            uploaded_file = request.FILES.get('file')
+            if uploaded_file:
+                df = pd.read_excel(uploaded_file)
+                list_of_lists = df.values.T.tolist()
+                Yi = list_of_lists
+            else:
+                return JsonResponse({'error': 'No file uploaded.'})
+        
+        purposiveSamplingInput = {
+            'insertedId': inserted_id,
+            'Yi': Yi,
+            'unit': unit,
+            'e': float(e),
+            'N': int(N),
+        }
+
+        samples = dowellPurposiveSampling(purposiveSamplingInput)
+        response = {
+            'samples': samples
+        }
+        
+        return JsonResponse(response, safe=False)
+
 
 def cluster_sampling(request):
     if request.method == 'POST':
@@ -148,29 +168,63 @@ def cluster_sampling(request):
         
         return JsonResponse(response, safe=False)
 
-def purposive_sampling(request):
+def stratified_sampling(request):
     if request.method == 'POST':
-        Yi = get_YI_data()
-        new_yi = sum(Yi, [])
-        unit = request.POST.get('unit')
-        e = request.POST.get('e')
-        N = request.POST.get('N')
+        data = request.POST.get('data')
+        inserted_id = request.POST.get('insertedId')
+        allocation_type = request.POST.get('allocationType')
+        sampling_type = request.POST.get('samplingType')
+        replacement = request.POST.get('replacement') == 'true'
+        populationSize = request.POST.get('populationSize')
 
-        purposiveSamplingInput = {
-            'Yi': new_yi,
-            'unit': unit,
-            'e': float(e),
-            'N': int(N),
+        if data == 'api':
+            Yi = get_YI_data()
+        elif data == 'upload':
+            uploaded_file = request.FILES.get('file')
+            if uploaded_file:
+                df = pd.read_excel(uploaded_file)
+                list_of_lists = df.values.T.tolist()
+                Yi = list_of_lists
+            else:
+                return JsonResponse({'error': 'No file uploaded.'})
+        
+        stratifiedSamplingInput = {
+            'insertedId': inserted_id,
+            'e': 0.1,
+            'allocationType': allocation_type,
+            'samplingType': sampling_type,
+            'replacement': replacement,
+            'Yi': Yi,
+            'populationSize': populationSize
         }
 
-        samples = dowellPurposiveSampling(purposiveSamplingInput)
+        result = dowellStratifiedSampling(stratifiedSamplingInput)
         response = {
-            'samples': samples
+            'result': result
         }
+        
         return JsonResponse(response, safe=False)
+
 
 def sampling_input(request):
     return render(request, 'sampling_inputs.html')
+
+def stratified_sampling_input(request):
+    return render(request, 'stratified_sampling_input.html')
+
+def systematic_sampling_input(request):
+    return render(request, 'systematic_sampling_input.html')
+
+def simple_random_sampling_input(request):
+    return render(request, 'simple_random_sampling_input.html')
+
+def cluster_sampling_input(request):
+    return render(request, 'cluster_sampling_input.html')
+
+def purposive_sampling_input(request):
+    return render(request, 'purposive_sampling_input.html')
+
+
 
 '''
 Types of sampling

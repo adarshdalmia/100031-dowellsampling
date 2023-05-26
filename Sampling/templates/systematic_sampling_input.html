@@ -1,33 +1,24 @@
 {% extends "base.html" %}
 {% block samplings %}
-  
+
 <div class="container">
   <div class="row">
     <div class="col-sm-12 text-center">
-      <h2>Simple Random Sampling</h2>
+      <h2>Systematic Sampling</h2>
     </div>
   </div>
   <div class="row">
     <div class="col-sm-12 col-md-6 offset-md-3">
-      <form method="POST" action="{% url 'simple_random_sampling' %}" enctype="multipart/form-data">
+      <form method="POST" action="{% url 'systematic_sampling' %}" enctype="multipart/form-data">
         {% csrf_token %}
-        <div class="form-group">
-          <label for="samplingType">Sampling Type:</label>
-          <select class="form-control" id="samplingType" name="samplingType" required>
-            <option value="geometricalApproach">Geometrical Approach</option>
-            <option value="mechanicalRandomisation">Mechanical Randomization</option>
-            <option value="randomNumberGeneration">Random Number Generation</option>
-          </select>
-        </div>
-
         <div class="form-group">
           <label for="insertedId">Inserted ID:</label>
           <input type="text" class="form-control" id="insertedId" name="insertedId" required>
         </div>
 
         <div class="form-group">
-          <label for="e">Error:</label>
-          <input type="text" class="form-control" id="e" name="e">
+          <label for="population">Population:</label>
+          <input type="text" class="form-control" id="population" name="population" required>
         </div>
 
         <div class="form-group">
