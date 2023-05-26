@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+{% block samplings %}
+  
+    <div class="container">
+        <div class="col-sm-12 col-md-12 text-center">
+            <h2>Stratified Sampling</h2>
+          </div>
+        <form method="POST" action="{% url 'stratified_sampling' %}" enctype="multipart/form-data">
+           {% csrf_token %}
+              <div class="col-sm-12 col-md-4"></div>
+              <div class="col-sm-12 col-md-4 col-md-offset-0">
+                <body>
+                  <div class="container">
+                      
+                      
+                          
+                          <div class="form-group">
+                              <label for="allocationType">Allocation Type:</label>
+                              <select class="form-control" id="allocationType" name="allocationType" required>
+                                  <option value="equal">Equal Allocation</option>
+                                  <option value="proportional">Proportional Allocation</option>
+                              </select>
+                          </div>
+                          
+                          <div class="form-group">
+                              <label for="samplingType">Sampling Type:</label>
+                              <select class="form-control" id="samplingType" name="samplingType" required>
+                                  <option value="geometricalApproach">Geometrical Approach</option>
+                                  <option value="mechanicalRandomisation">Mechanical Randomization</option>
+                                  <option value="randomNumberGeneration">Random Number Generation</option>
+                              </select>
+                          </div>
+                          
+                          <div class="form-group">
+                              <label for="insertedId">Inserted ID:</label>
+                              <input type="text" class="form-control" id="insertedId" name="insertedId" required>
+                          </div>
+                          
+                          <div class="form-group">
+                              <label for="replacement">Replacement:</label>
+                              <input type="checkbox" id="replacement" name="replacement" value="true">
+                          </div>
+                          
+                          <div class="form-group">
+                              <label for="populationSize">Population Size:</label>
+                              <input type="text" class="form-control" id="populationSize" name="populationSize" required>
+                          </div>
+                          
+                          <div class="form-group">
+                              <label for="data">Data:</label>
+                              <select class="form-control" id="data" name="data" required>
+                                  <option value="api">API</option>
+                                  <option value="upload">Upload</option>
+                              </select>
+                          </div>
+                          
+                          <div id="uploadContainer" style="display: none;">
+                              <label for="file">Upload File:</label>
+                              <input type="file" id="file" name="file" accept=".xlsx, .xls">
+                          </div>
+                          
+                          <button type="submit" class="btn btn-primary">Submit</button>
+                      </form>
+                  </div>
+              </body>
+              
+    </div>
+    <script>
+      var dataSelectElement = document.getElementById("data");
+      var uploadContainer = document.getElementById("uploadContainer");
+
+      dataSelectElement.addEventListener("change", function () {
+          if (dataSelectElement.value === "upload") {
+              uploadContainer.style.display = "block";
+          } else {
+              uploadContainer.style.display = "none";
+          }
+      });
+  </script>
+    {% endblock samplings %}

@@ -1,3 +1,4 @@
+from turtle import pd
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse, HttpResponse
@@ -113,17 +114,30 @@ def simple_random_sampling(request):
 
 def cluster_sampling(request):
     if request.method == 'POST':
-        Yi = get_YI_data()
+        data = request.POST.get('data')
+        M = request.POST.get('numberOfClusters')
+        inserted_id = request.POST.get('insertedId')
+        N = request.POST.get('populationSize')
         e = request.POST.get('e')
-        N = request.POST.get('N')
-        M = request.POST.get('M')
-        hi = request.POST.get('hi')
-
+        hi = request.POST.get('sizeOfCluster')
+        
+        # Retrieve Yi data (you need to implement this)
+        if data == 'api':
+            Yi = get_YI_data()
+        elif data == 'upload':
+            uploaded_file = request.FILES.get('file')
+            if uploaded_file:
+                df = pd.read_excel(uploaded_file)
+                list_of_lists = df.values.T.tolist()
+                Yi = list_of_lists
+            else:
+                return JsonResponse({'error': 'No file uploaded.'})
+        
         clusterSamplingInput = {
             'Yi': Yi,
             'e': float(e),
             'N': int(N),
-            'M': int(M),            
+            'M': int(M),
             'hi': int(hi)
         }
 
@@ -131,8 +145,8 @@ def cluster_sampling(request):
         response = {
             'samples': samples
         }
-    response = samples
-    return JsonResponse(response, safe=False)
+        
+        return JsonResponse(response, safe=False)
 
 def purposive_sampling(request):
     if request.method == 'POST':
