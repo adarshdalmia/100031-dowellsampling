@@ -10,9 +10,9 @@ def dowellSimpleRandomSampling(simpleRandomSamplingInput):
     N = simpleRandomSamplingInput['N']
     n = simpleRandomSamplingInput['n']
     method = simpleRandomSamplingInput['method']
-    print(Yi)
-    lengths = [len(item) for sublist in Yi for item in sublist]
-    variance = pvariance(lengths)
+    # print(Yi)
+    # lengths = [len(item) for sublist in Yi for item in sublist]
+    # variance = pvariance(lengths)
     variance = 0.23
     simpleRandomSamplingOutput = {
         'status': True

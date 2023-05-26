@@ -1,4 +1,4 @@
-from turtle import pd
+import pandas as pd
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse, HttpResponse
@@ -37,7 +37,7 @@ def systematic_sampling(request):
     if request.method == 'POST':
         data = request.POST.get('data')
         inserted_id = request.POST.get('insertedId')
-        population_size = request.POST.get('population_size')
+        population_size = request.POST.get('populationSize')
 
         if data == 'api':
             Yi = get_YI_data()
@@ -67,10 +67,10 @@ def simple_random_sampling(request):
     if request.method == 'POST':
         data = request.POST.get('data')
         inserted_id = request.POST.get('insertedId')
-        N = request.POST.get('N')
+        N = request.POST.get('populationSize')
         e = request.POST.get('e')
-        method = request.POST.get('method')
-
+        method = request.POST.get('samplingType')
+        n = dowellSampleSize(int(N),float(e))
         if data == 'api':
             Yi = get_YI_data()
         elif data == 'upload':
@@ -87,7 +87,8 @@ def simple_random_sampling(request):
             'Yi': Yi,
             'N': int(N),
             'e': float(e),
-            'method': method
+            'method': method,
+            'n': n
         }
 
         samples = dowellSimpleRandomSampling(simpleRandomSamplingInput)
@@ -115,10 +116,10 @@ def purposive_sampling(request):
                 Yi = list_of_lists
             else:
                 return JsonResponse({'error': 'No file uploaded.'})
-        
+        new_yi = sum(Yi, [])
         purposiveSamplingInput = {
             'insertedId': inserted_id,
-            'Yi': Yi,
+            'Yi': new_yi,
             'unit': unit,
             'e': float(e),
             'N': int(N),
