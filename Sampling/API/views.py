@@ -60,7 +60,7 @@ def systematic_sampling(request):
         response = {
             'samples': samples
         }
-        return render(request, 'result.html', {'response': response})
+        # return render(request, 'result.html', {'response': response})
         return JsonResponse(response, safe=False)
 
 def simple_random_sampling(request):
@@ -166,7 +166,7 @@ def cluster_sampling(request):
         response = {
             'samples': samples
         }
-        return render(request, 'result.html', {'response': response})
+        # return render(request, 'result.html', {'response': response})
         return JsonResponse(response, safe=False)
 
 def stratified_sampling(request):
