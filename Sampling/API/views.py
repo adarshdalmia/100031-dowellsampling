@@ -60,7 +60,7 @@ def systematic_sampling(request):
         response = {
             'samples': samples
         }
-        
+        return render(request, 'result.html', {'response': response})
         return JsonResponse(response, safe=False)
 
 def simple_random_sampling(request):
@@ -95,7 +95,7 @@ def simple_random_sampling(request):
         response = {
             'samples': samples
         }
-        
+        # return render(request, 'result.html', {'response': response})
         return JsonResponse(response, safe=False)
 
 def purposive_sampling(request):
@@ -129,7 +129,7 @@ def purposive_sampling(request):
         response = {
             'samples': samples
         }
-        
+        # return render(request, 'result.html', {'response': response})
         return JsonResponse(response, safe=False)
 
 
@@ -166,7 +166,7 @@ def cluster_sampling(request):
         response = {
             'samples': samples
         }
-        
+        return render(request, 'result.html', {'response': response})
         return JsonResponse(response, safe=False)
 
 def stratified_sampling(request):
@@ -203,7 +203,7 @@ def stratified_sampling(request):
         response = {
             'result': result
         }
-        
+        # return render(request, 'result.html', {'response': response})
         return JsonResponse(response, safe=False)
 
 
@@ -224,6 +224,7 @@ def cluster_sampling_input(request):
 
 def purposive_sampling_input(request):
     return render(request, 'purposive_sampling_input.html')
+
 
 
 
