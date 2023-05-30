@@ -207,6 +207,7 @@ def stratified_sampling(request):
         return JsonResponse(response, safe=False)
 
 
+
 def sampling_input(request):
     return render(request, 'sampling_inputs.html')
 
