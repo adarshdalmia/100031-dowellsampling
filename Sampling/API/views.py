@@ -38,7 +38,7 @@ def systematic_sampling(request):
         data = request.POST.get('data')
         inserted_id = request.POST.get('insertedId')
         population_size = request.POST.get('populationSize')
-
+        result = request.POST.get('result')
         if data == 'api':
             Yi = get_YI_data()
         elif data == 'upload':
@@ -60,7 +60,8 @@ def systematic_sampling(request):
         response = {
             'samples': samples
         }
-        # return render(request, 'result.html', {'response': response})
+        if result == 'Table':
+            return render(request, 'result.html', {'response': response})
         return JsonResponse(response, safe=False)
 
 def simple_random_sampling(request):
@@ -71,6 +72,7 @@ def simple_random_sampling(request):
         e = request.POST.get('e')
         method = request.POST.get('samplingType')
         n = dowellSampleSize(int(N),float(e))
+        result = request.POST.get('result')
         if data == 'api':
             Yi = get_YI_data()
         elif data == 'upload':
@@ -92,10 +94,9 @@ def simple_random_sampling(request):
         }
 
         samples = dowellSimpleRandomSampling(simpleRandomSamplingInput)
-        response = {
-            'samples': samples
-        }
-        # return render(request, 'result.html', {'response': response})
+        response = {"samples": samples['sampleUnits']}
+        if result == 'Table':
+            return render(request, 'result.html', {'response': response})
         return JsonResponse(response, safe=False)
 
 def purposive_sampling(request):
@@ -105,7 +106,7 @@ def purposive_sampling(request):
         unit = request.POST.get('unit')
         e = request.POST.get('e')
         N = request.POST.get('N')
-
+        result = request.POST.get('result')
         if data == 'api':
             Yi = get_YI_data()
         elif data == 'upload':
@@ -129,7 +130,8 @@ def purposive_sampling(request):
         response = {
             'samples': samples
         }
-        # return render(request, 'result.html', {'response': response})
+        if result == 'Table':
+            return render(request, 'result.html', {'response': response})
         return JsonResponse(response, safe=False)
 
 
@@ -141,7 +143,7 @@ def cluster_sampling(request):
         N = request.POST.get('populationSize')
         e = request.POST.get('e')
         hi = request.POST.get('sizeOfCluster')
-        
+        result = request.POST.get('result')
         # Retrieve Yi data (you need to implement this)
         if data == 'api':
             Yi = get_YI_data()
@@ -166,7 +168,9 @@ def cluster_sampling(request):
         response = {
             'samples': samples
         }
-        # return render(request, 'result.html', {'response': response})
+        
+        if result == 'Table':
+            return render(request, 'result.html', {'response': response})
         return JsonResponse(response, safe=False)
 
 def stratified_sampling(request):
@@ -177,7 +181,7 @@ def stratified_sampling(request):
         sampling_type = request.POST.get('samplingType')
         replacement = request.POST.get('replacement') == 'true'
         populationSize = request.POST.get('populationSize')
-
+        result = request.POST.get('result')
         if data == 'api':
             Yi = get_YI_data()
         elif data == 'upload':
@@ -199,11 +203,13 @@ def stratified_sampling(request):
             'populationSize': populationSize
         }
 
-        result = dowellStratifiedSampling(stratifiedSamplingInput)
+        samples = dowellStratifiedSampling(stratifiedSamplingInput)
         response = {
-            'result': result
+            'samples': samples
         }
-        # return render(request, 'result.html', {'response': response})
+        response = {"samples": samples['sampleUnits']}
+        if result == 'Table':
+            return render(request, 'result.html', {'response': response})
         return JsonResponse(response, safe=False)
 
 
