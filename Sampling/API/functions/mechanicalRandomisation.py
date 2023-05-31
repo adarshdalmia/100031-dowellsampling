@@ -1,3 +1,4 @@
+
 from random import randint
 
 def dowellRandomTable(N, n, Yi):
@@ -24,5 +25,11 @@ def dowellRandomTable(N, n, Yi):
                 rand_index %= N
         else:
             rand_index = random_no
-        sampleUnits.append(Yi[rand_index])
+
+        try:
+            sampleUnits.append(Yi[rand_index])
+        except IndexError:
+            return "Error: The specified index is out of range. Please try again with valid input or increase or decrease value."
+
     return sampleUnits
+
