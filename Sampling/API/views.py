@@ -10,7 +10,7 @@ from API.functions.systematic_sampling import dowellSystematicSampling
 from API.functions.simpleRandomSampling import dowellSimpleRandomSampling
 from API.functions.clusterSampling import dowellClusterSampling
 from API.functions.purposiveSampling import dowellPurposiveSampling
-
+from API.functions.multistage_sampling import dowellmultistagesampling
 
 import json
 import requests
@@ -252,6 +252,12 @@ def stratified_sampling(request):
         if result == 'Table':
             return render(request, 'result.html', {'response': response})
         return JsonResponse(response, safe=False)
+
+
+
+def multistage_sampling(request):
+    a = dowellmultistagesampling
+    return JsonResponse(a)
 
 
 
