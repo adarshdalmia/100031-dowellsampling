@@ -22,3 +22,4 @@ def dowell_cluster_sampling():
 
 if __name__ == "__main__":
     print(dowell_cluster_sampling())
+    
