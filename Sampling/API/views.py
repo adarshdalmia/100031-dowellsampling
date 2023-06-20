@@ -254,10 +254,13 @@ def stratified_sampling(request):
         return JsonResponse(response, safe=False)
 
 
-
-def multistage_sampling(request):
-    a = dowellmultistagesampling
-    return JsonResponse(a)
+def search_function(request):
+    if request.method == 'POST':
+        key = request.POST.get('key')
+        value = request.POST.get('value')
+        print("Key:", key)
+        print("Value:", value)
+    return render(request, 'key_value.html')
 
 
 

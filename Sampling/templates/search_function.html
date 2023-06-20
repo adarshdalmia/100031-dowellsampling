@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Enter Key-Value Pair</title>
+</head>
+<body>
+    <form method="POST" action="{% url 'key_value' %}">
+        {% csrf_token %}
+        <label for="key">Key:</label>
+        <input type="text" name="key" id="key"><br><br>
+        <label for="value">Value:</label>
+        <input type="text" name="value" id="value"><br><br>
+        <input type="submit" value="Submit">
+    </form>
+</body>
+</html>
