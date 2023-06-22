@@ -7,17 +7,17 @@ def dowellConnection(data):
     field = data['field']
     update_field = data['update_field']
     payload = json.dumps({
-        "cluster": "dowellfunctions",
-        "database": "dowellfunctions",
-        "collection": "classification",
-        "document": "classification",
-        "team_member_ID": "1196001",
-        "function_ID": "ABCDE",
-        "command": 'fetch',
-        "field": {},
-        "update_field": None,
-        "platform": "bangalore"
-        })
+    "cluster": "license",
+    "database": "license",
+    "collection": "licenses",
+    "document": "licenses",
+    "team_member_ID": "689044433",
+    "function_ID": "ABCDE",
+    "command": "fetch",
+    "field": {},
+    "update_field": None,
+    "platform": "bangalore"
+})
     headers = {
         'Content-Type': 'application/json'
     }
