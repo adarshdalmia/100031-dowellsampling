@@ -1,16 +1,72 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Enter Key-Value Pair</title>
+    <title>Dowell Search</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
-    <form method="POST" action="{% url 'key_value' %}">
-        {% csrf_token %}
-        <label for="key">Key:</label>
-        <input type="text" name="key" id="key"><br><br>
-        <label for="value">Value:</label>
-        <input type="text" name="value" id="value"><br><br>
-        <input type="submit" value="Submit">
-    </form>
+    <h1>Dowell Search</h1>
+
+    <label for="searchCount">Number of search criteria:</label>
+    <input type="number" id="searchCount" min="0" value="0"><br>
+
+    <div id="searchCriteria"></div><br>
+
+    <button id="searchButton">Search</button>
+
+    <h2>Search Results</h2>
+    <div id="searchResults"></div>
+
+    <script>
+        $(document).ready(function() {
+            $('#searchCount').change(function() {
+                var count = $(this).val();
+                var searchCriteria = $('#searchCriteria');
+                searchCriteria.empty();
+
+                for (var i = 0; i < count; i++) {
+                    var keyInput = $('<input type="text" placeholder="Key">');
+                    var valueInput = $('<input type="text" placeholder="Value">');
+                    searchCriteria.append('<br>Key: ');
+                    searchCriteria.append(keyInput);
+                    searchCriteria.append(' Value: ');
+                    searchCriteria.append(valueInput);
+                }
+            });
+
+            $('#searchButton').click(function() {
+                var searchCount = $('#searchCount').val();
+                var searchCriteria = [];
+
+                for (var i = 0; i < searchCount; i++) {
+                    var key = $('#searchCriteria input[placeholder="Key"]').eq(i).val();
+                    var value = $('#searchCriteria input[placeholder="Value"]').eq(i).val();
+                    searchCriteria.push({ key: key, value: value });
+                }
+
+                var queryParams = { search_count: searchCount };
+
+                for (var i = 0; i < searchCriteria.length; i++) {
+                    queryParams['key' + i] = searchCriteria[i].key;
+                    queryParams['value' + i] = searchCriteria[i].value;
+                }
+
+                var url = 'http://127.0.0.1:8000/api/dowell-search/';
+                $.get(url, queryParams, function(data) {
+                    var searchResults = $('#searchResults');
+                    searchResults.empty();
+
+                    if (data.length === 0) {
+                        searchResults.append('<p>No results found.</p>');
+                    } else {
+                        for (var i = 0; i < data.length; i++) {
+                            var result = $('<p>').text(JSON.stringify(data[i]));
+                            searchResults.append(result);
+                        }
+                    }
+                });
+            });
+        });
+    </script>
 </body>
 </html>

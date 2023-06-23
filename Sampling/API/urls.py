@@ -14,7 +14,8 @@ urlpatterns = [
     path('simple_random_sampling_input/', views.simple_random_sampling_input,name='simple_random_sampling_input'),
     path('cluster_sampling_input/', views.cluster_sampling_input,name='cluster_sampling_input'),
     path('purposive_sampling_input/', views.purposive_sampling_input,name='purposive_sampling_input'),
-    path('search-function/',views.search_function,name='search_function')
+    path('search-function/',views.search,name='search_function'),
+    path('dowell-search/',views.dowell_search,name='search_function_input'),
     
     
 ]

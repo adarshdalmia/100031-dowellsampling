@@ -10,8 +10,9 @@ from API.functions.systematic_sampling import dowellSystematicSampling
 from API.functions.simpleRandomSampling import dowellSimpleRandomSampling
 from API.functions.clusterSampling import dowellClusterSampling
 from API.functions.purposiveSampling import dowellPurposiveSampling
-from API.functions.multistage_sampling import dowellmultistagesampling
-
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from .functions.searchFunction import dowell_purposive_sampling
 import json
 import requests
 import pprint
@@ -254,13 +255,22 @@ def stratified_sampling(request):
         return JsonResponse(response, safe=False)
 
 
-def search_function(request):
-    if request.method == 'POST':
-        key = request.POST.get('key')
-        value = request.POST.get('value')
-        print("Key:", key)
-        print("Value:", value)
-    return render(request, 'key_value.html')
+
+@api_view(['GET'])
+def dowell_search(request):
+    search_count = int(request.GET.get('search_count', 0))
+
+    search_criteria = []
+    for i in range(search_count):
+        key = request.GET.get(f'key{i}', '')
+        value = request.GET.get(f'value{i}', '')
+        search_criteria.append((key, value))
+
+    sample_values = dowell_purposive_sampling(search_criteria)
+    return Response(sample_values)
+
+def search(request):
+    return render(request, 'search_function.html')
 
 
 
