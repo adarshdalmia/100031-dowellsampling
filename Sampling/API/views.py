@@ -259,14 +259,15 @@ def stratified_sampling(request):
 @api_view(['GET'])
 def dowell_search(request):
     search_count = int(request.GET.get('search_count', 0))
-
+    user_field_str = request.GET.get('user_field','{}')
     search_criteria = []
+    user_field = json.loads(user_field_str)
     for i in range(search_count):
         key = request.GET.get(f'key{i}', '')
         value = request.GET.get(f'value{i}', '')
         search_criteria.append((key, value))
-
-    sample_values = dowell_purposive_sampling(search_criteria)
+    print(user_field)
+    sample_values = dowell_purposive_sampling(search_criteria,user_field)
     return Response(sample_values)
 
 def search(request):

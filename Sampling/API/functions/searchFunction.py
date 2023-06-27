@@ -10,12 +10,13 @@ def dowellConnection(data):
     response = requests.post(url, headers=headers, data=payload)
     return response.json()
 
-def dowell_purposive_sampling(search_criteria):
+def dowell_purposive_sampling(search_criteria,user_field):
     n = 10
+    print(type(user_field))
 
     sample_values = []
     data = {
-        "cluster": "license",
+        "cluster":  user_field.get("cluster", ""),
         "database": "license",
         "collection": "licenses",
         "document": "licenses",

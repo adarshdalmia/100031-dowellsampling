@@ -11,6 +11,10 @@
     <input type="number" id="searchCount" min="0" value="0"><br>
 
     <div id="searchCriteria"></div><br>
+    
+    <!-- Add a new field for the user -->
+    <label for="userField">Credentails data (Mandatory):</label>
+    <input type="text" id="userField" required><br><br>
 
     <button id="searchButton">Search</button>
 
@@ -43,8 +47,11 @@
                     var value = $('#searchCriteria input[placeholder="Value"]').eq(i).val();
                     searchCriteria.push({ key: key, value: value });
                 }
+                
+                // Get the user field value
+                var userField = $('#userField').val();
 
-                var queryParams = { search_count: searchCount };
+                var queryParams = { search_count: searchCount, user_field: userField };
 
                 for (var i = 0; i < searchCriteria.length; i++) {
                     queryParams['key' + i] = searchCriteria[i].key;
