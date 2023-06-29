@@ -8,6 +8,7 @@ def dowellConnection(data):
         'Content-Type': 'application/json'
     }
     response = requests.post(url, headers=headers, data=payload)
+    print(response)
     return response.json()
 
 def dowell_purposive_sampling(search_criteria,user_field):
