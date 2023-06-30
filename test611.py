@@ -49,3 +49,12 @@ def dowell_purposive_sampling():
 
 if __name__ == "__main__":
     print(dowell_purposive_sampling())
+{
+    "cluster": "license",
+    "database": "license",
+    "collection": "licenses",
+    "document": "licenses",
+    "team_member_ID": "689044433",
+    "function_ID": "ABCDE",
+    "platform": "bangalore"
+}

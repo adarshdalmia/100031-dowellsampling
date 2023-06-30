@@ -258,23 +258,34 @@ def stratified_sampling(request):
 
 @api_view(['POST', 'GET'])
 def dowell_search(request):
-    search_count = int(request.GET.get('search_count', 0))
-    user_field_str = request.GET.get('user_field','{}')
-    uploaded_data = request.FILES.get('uploaded_data')
-    search_criteria = []
-    user_field = json.loads(user_field_str)
-    if uploaded_data:
-        json_data = json.load(uploaded_data)
-        print('data')
-        sample_values = dowell_purposive_sampling(json_data,user_field)
+    if request.method == 'POST':
+        payload = request.data
+        search_count = int(payload.get('search_count', 0))
+        user_field = payload.get('user_field', {})
+        uploaded_data = request.data.get('uploaded_data')
+        search_criteria = []
+        print('user_field', user_field)
+        print('search_count', search_count)
+
+        if uploaded_data:
+            file_path = uploaded_data.get('_file', '')
+            with open(file_path, 'r') as file:
+                json_data = json.load(file)
+                print('data', json_data)
+                # sample_values = dowell_purposive_sampling(search_criteria, user_field)
+                return Response(sample_values)
+
+        for i in range(search_count):
+            key = payload.get(f'key{i}', '')
+            value = payload.get(f'value{i}', '')
+            search_criteria.append((key, value))
+        
+        print('search', search_criteria)
+        sample_values = dowell_purposive_sampling(search_criteria, user_field)
         return Response(sample_values)
-    for i in range(search_count):
-        key = request.GET.get(f'key{i}', '')
-        value = request.GET.get(f'value{i}', '')
-        search_criteria.append((key, value))
-    print(user_field)
-    sample_values = dowell_purposive_sampling(search_criteria,user_field)
-    return Response(sample_values)
+
+
+
 
 def search(request):
     return render(request, 'search_function.html')
