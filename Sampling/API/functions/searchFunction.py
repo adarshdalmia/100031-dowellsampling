@@ -11,7 +11,7 @@ def dowellConnection(data):
     print(response)
     return response.json()
 
-def dowell_purposive_sampling(search_criteria,user_field):
+def dowell_purposive_sampling(search_criteria,user_field,manual_data):
     n = 10
     print(type(user_field))
 
@@ -28,8 +28,13 @@ def dowell_purposive_sampling(search_criteria,user_field):
         "update_field": None,
         "platform": "bangalore"
     }
-    response = dowellConnection(data)
-    all_data = response.get("data", [])
+    if manual_data:
+        # all_data = manual_data
+        all_data = manual_data.get("data", [])
+    else:
+        response = dowellConnection(data)
+        all_data = response.get("data", [])
+        # print(all_data)
 
     for item in all_data:
         # check if item matches the search criteria

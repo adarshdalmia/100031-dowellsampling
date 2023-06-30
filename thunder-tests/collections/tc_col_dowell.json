@@ -1,0 +1,47 @@
+{
+    "_id": "e8db22b8-a2c5-4019-81e4-c5d4b5b4546f",
+    "colName": "dowell",
+    "created": "2023-06-30T10:28:10.780Z",
+    "sortNum": 10000,
+    "folders": [],
+    "requests": [
+        {
+            "_id": "bc9de6bf-d962-4f13-97a1-be3bdedc5649",
+            "colId": "e8db22b8-a2c5-4019-81e4-c5d4b5b4546f",
+            "containerId": "",
+            "name": "http://127.0.0.1:8000/api/dowell-search/",
+            "url": "http://127.0.0.1:8000/api/dowell-search/",
+            "method": "POST",
+            "sortNum": 10000,
+            "created": "2023-06-30T10:28:10.782Z",
+            "modified": "2023-06-30T10:40:11.339Z",
+            "headers": [],
+            "params": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n  \"search_count\": 1,\n  \"user_field\": {\n    \"cluster\": \"license\",\n    \"database\": \"license\",\n    \"collection\": \"licenses\",\n    \"document\": \"licenses\",\n    \"team_member_ID\": \"689044433\",\n    \"function_ID\": \"ABCDE\",\n    \"platform\": \"bangalore\"\n  },\n  \"key0\": \"eventId\",\n  \"value0\": \"FB1010000000168715625758862276\"\n}\n",
+                "form": []
+            },
+            "tests": []
+        },
+        {
+            "_id": "837ba53c-116c-4a94-bb58-79c439b61676",
+            "colId": "e8db22b8-a2c5-4019-81e4-c5d4b5b4546f",
+            "containerId": "",
+            "name": "http://127.0.0.1:8000/api/dowell-search/ Copy",
+            "url": "http://127.0.0.1:8000/api/dowell-search/",
+            "method": "POST",
+            "sortNum": 20000,
+            "created": "2023-06-30T10:40:13.760Z",
+            "modified": "2023-06-30T10:40:26.271Z",
+            "headers": [],
+            "params": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n  \"search_count\": 1,\n  \"user_field\": {\n    \"cluster\": \"license\",\n    \"database\": \"license\",\n    \"collection\": \"licenses\",\n    \"document\": \"licenses\",\n    \"team_member_ID\": \"689044433\",\n    \"function_ID\": \"ABCDE\",\n    \"platform\": \"bangalore\"\n  },\n  \"key0\": \"eventId\",\n  \"value0\": \"FB1010000000168715625758862276\",\n  \"uploaded_data\": {\n    \"_file\": \"../thunder-tests/data.json\"\n  }\n}\n",
+                "form": []
+            },
+            "tests": []
+        }
+    ]
+}

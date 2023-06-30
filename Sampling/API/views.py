@@ -264,24 +264,25 @@ def dowell_search(request):
         user_field = payload.get('user_field', {})
         uploaded_data = request.data.get('uploaded_data')
         search_criteria = []
+        manual_data = None
         print('user_field', user_field)
         print('search_count', search_count)
-
-        if uploaded_data:
-            file_path = uploaded_data.get('_file', '')
-            with open(file_path, 'r') as file:
-                json_data = json.load(file)
-                print('data', json_data)
-                # sample_values = dowell_purposive_sampling(search_criteria, user_field)
-                return Response(sample_values)
 
         for i in range(search_count):
             key = payload.get(f'key{i}', '')
             value = payload.get(f'value{i}', '')
             search_criteria.append((key, value))
         
+        if uploaded_data:
+            file_path = uploaded_data.get('_file', '')
+            with open(file_path, 'r') as file:
+                json_data = json.load(file)
+                manual_data = json_data
+                # print('data',manual_data)
+                sample_values = dowell_purposive_sampling(search_criteria, user_field,manual_data)
+                return Response(sample_values)
         print('search', search_criteria)
-        sample_values = dowell_purposive_sampling(search_criteria, user_field)
+        sample_values = dowell_purposive_sampling(search_criteria, user_field,manual_data)
         return Response(sample_values)
 
 
