@@ -12,7 +12,7 @@ def dowellConnection(data):
     return response.json()
 
 def dowell_purposive_sampling(search_criteria, user_field, manual_data):
-    n = 10
+    n = 1000000
     sample_values = []
     data = {
         "cluster": user_field.get("cluster", ""),
@@ -34,8 +34,13 @@ def dowell_purposive_sampling(search_criteria, user_field, manual_data):
         all_data = response.get("data", [])
 
     for item in all_data:
-        # check if any of the item's values match the search criteria partially
-        if any(value in str(item.get(key, "")) for key, value in search_criteria):
+        # check if all search criteria values are present in the corresponding item's values
+        criteria_satisfied = True
+        for key, value in search_criteria:
+            if key not in item or value not in str(item[key]):
+                criteria_satisfied = False
+                break
+        if criteria_satisfied:
             sample_values.append(item)
             if len(sample_values) == n:
                 break

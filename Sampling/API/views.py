@@ -260,7 +260,7 @@ def stratified_sampling(request):
         return JsonResponse(response, safe=False)
 
 
-
+@csrf_exempt
 @api_view(['POST', 'GET'])
 def dowell_search(request):
     if request.method == 'POST':
@@ -268,6 +268,7 @@ def dowell_search(request):
         search_count = int(payload.get('search_count', 0))
         user_field = payload.get('user_field', {})
         uploaded_data = request.data.get('uploaded_data')
+        
         search_criteria = []
         manual_data = None
         print('user_field', user_field)
