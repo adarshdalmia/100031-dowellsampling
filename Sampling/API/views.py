@@ -17,6 +17,7 @@ import json
 import requests
 import pprint
 
+@csrf_exempt
 def get_event_id():
 
     url="https://uxlivinglab.pythonanywhere.com/create_event"
@@ -104,6 +105,7 @@ def systematic_sampling(request):
             return render(request, 'result.html', {'response': response})
         return JsonResponse(response, safe=False)
 
+@csrf_exempt
 def simple_random_sampling(request):
     if request.method == 'POST':
         data = request.POST.get('data')
@@ -139,6 +141,7 @@ def simple_random_sampling(request):
             return render(request, 'result.html', {'response': response})
         return JsonResponse(response, safe=False)
 
+@csrf_exempt
 def purposive_sampling(request):
     if request.method == 'POST':
         data = request.POST.get('data')
@@ -175,6 +178,7 @@ def purposive_sampling(request):
         return JsonResponse(response, safe=False)
 
 
+@csrf_exempt
 def cluster_sampling(request):
     if request.method == 'POST':
         data = request.POST.get('data')
@@ -213,6 +217,7 @@ def cluster_sampling(request):
             return render(request, 'result.html', {'response': response})
         return JsonResponse(response, safe=False)
 
+@csrf_exempt
 def stratified_sampling(request):
     if request.method == 'POST':
         data = request.POST.get('data')
@@ -287,7 +292,7 @@ def dowell_search(request):
 
 
 
-
+@csrf_exempt
 def search(request):
     return render(request, 'search_function.html')
 
