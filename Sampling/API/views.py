@@ -259,15 +259,17 @@ def stratified_sampling(request):
             return render(request, 'result.html', {'response': response})
         return JsonResponse(response, safe=False)
 
-
+from django.core.files.storage import default_storage
 @csrf_exempt
 @api_view(['POST', 'GET'])
 def dowell_search(request):
     if request.method == 'POST':
         payload = request.data
+        print(payload)
         search_count = int(payload.get('search_count', 0))
         user_field = payload.get('user_field', {})
-        uploaded_data = request.data.get('uploaded_data')
+        # uploaded_data = request.data.get('uploaded_data')
+        uploaded_data = request.FILES.get('_file')
         
         search_criteria = []
         manual_data = None
@@ -279,14 +281,23 @@ def dowell_search(request):
             value = payload.get(f'value{i}', '')
             search_criteria.append((key, value))
         
+        # if uploaded_data:
+        #     file_path = uploaded_data.get('_file', '')
+        #     with open(file_path, 'r') as file:
+        #         json_data = json.load(file)
+        #         manual_data = json_data
+        #         # print('data',manual_data)
+        #         sample_values = dowell_purposive_sampling(search_criteria, user_field,manual_data)
+        #         return Response(sample_values)
         if uploaded_data:
-            file_path = uploaded_data.get('_file', '')
-            with open(file_path, 'r') as file:
+            print('uploaded_data', uploaded_data)
+            file_path = default_storage.save(uploaded_data.name, uploaded_data)  # Save the uploaded file
+            with default_storage.open(file_path, 'r') as file:
                 json_data = json.load(file)
                 manual_data = json_data
-                # print('data',manual_data)
-                sample_values = dowell_purposive_sampling(search_criteria, user_field,manual_data)
+                sample_values = dowell_purposive_sampling(search_criteria, user_field, manual_data)
                 return Response(sample_values)
+        print('search')
         print('search', search_criteria)
         sample_values = dowell_purposive_sampling(search_criteria, user_field,manual_data)
         return Response(sample_values)
