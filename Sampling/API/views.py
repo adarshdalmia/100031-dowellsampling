@@ -17,335 +17,340 @@ import json
 import requests
 import pprint
 
+
 @csrf_exempt
 def get_event_id():
+    url = "https://uxlivinglab.pythonanywhere.com/create_event"
 
-    url="https://uxlivinglab.pythonanywhere.com/create_event"
-
-    data={
-        "platformcode":"FB" ,
-        "citycode":"101",
-        "daycode":"0",
-        "dbcode":"pfm" ,
-        "ip_address":"192.168.0.41", # get from dowell track my ip function 
-        "login_id":"lav", #get from login function
-        "session_id":"new", #get from login function
-        "processcode":"1",
-        "location":"22446576", # get from dowell track my ip function 
-        "objectcode":"1",
-        "instancecode":"100051",
-        "context":"afdafa ",
-        "document_id":"3004",
-        "rules":"some rules",
-        "status":"work",
+    data = {
+        "platformcode": "FB",
+        "citycode": "101",
+        "daycode": "0",
+        "dbcode": "pfm",
+        "ip_address": "192.168.0.41",  # get from dowell track my ip function
+        "login_id": "lav",  # get from login function
+        "session_id": "new",  # get from login function
+        "processcode": "1",
+        "location": "22446576",  # get from dowell track my ip function
+        "objectcode": "1",
+        "instancecode": "100051",
+        "context": "afdafa ",
+        "document_id": "3004",
+        "rules": "some rules",
+        "status": "work",
         "data_type": "learn",
         "purpose_of_usage": "add",
-        "colour":"color value",
-        "hashtags":"hash tag alue",
-        "mentions":"mentions value",
-        "emojis":"emojis",
-        "bookmarks": "a book marks"
+        "colour": "color value",
+        "hashtags": "hash tag alue",
+        "mentions": "mentions value",
+        "emojis": "emojis",
+        "bookmarks": "a book marks",
     }
 
-    r=requests.post(url,json=data)
+    r = requests.post(url, json=data)
     if r.status_code == 201:
         return json.loads(r.text)
-    else: 
-        return json.loads(r.text)['error']
+    else:
+        return json.loads(r.text)["error"]
+
 
 @csrf_exempt
 def get_data(request):
-    header = { 'content-type': 'application/json'}
-    data = json.dumps({
-   "insertedId":"646d188771d319c4cf8e182a"
-})
-    url = 'http://100061.pythonanywhere.com/function/'
-    response = requests.request("POSR",url, data=data, headers=header).json()
+    header = {"content-type": "application/json"}
+    data = json.dumps({"insertedId": "646d188771d319c4cf8e182a"})
+    url = "http://100061.pythonanywhere.com/function/"
+    response = requests.request("POSR", url, data=data, headers=header).json()
     return JsonResponse(response)
+
 
 @csrf_exempt
 def get_YI_data():
-    header = { 'content-type': 'application/json'}
-    data = json.dumps({
-   "insertedId":"646d188771d319c4cf8e182a"
-})
-    url = 'http://100061.pythonanywhere.com/function/'
-    response = requests.request("POST",url, data=data, headers=header).json()
-    data = response['finalOutput']
+    header = {"content-type": "application/json"}
+    data = json.dumps({"insertedId": "646d188771d319c4cf8e182a"})
+    url = "http://100061.pythonanywhere.com/function/"
+    response = requests.request("POST", url, data=data, headers=header).json()
+    data = response["finalOutput"]
     return data
 
+
 def systematic_sampling(request):
-    if request.method == 'POST':
-        data = request.POST.get('data')
-        inserted_id = request.POST.get('insertedId')
-        population_size = request.POST.get('populationSize')
-        result = request.POST.get('result')
-        if data == 'api':
+    if request.method == "POST":
+        data = request.POST.get("data")
+        inserted_id = request.POST.get("insertedId")
+        population_size = request.POST.get("populationSize")
+        result = request.POST.get("result")
+        if data == "api":
             Yi = get_YI_data()
-        elif data == 'upload':
-            uploaded_file = request.FILES.get('file')
+        elif data == "upload":
+            uploaded_file = request.FILES.get("file")
             if uploaded_file:
                 df = pd.read_excel(uploaded_file)
                 list_of_lists = df.values.T.tolist()
                 Yi = list_of_lists
             else:
-                return JsonResponse({'error': 'No file uploaded.'})
-        
+                return JsonResponse({"error": "No file uploaded."})
+
         systematicSamplingInput = {
-            'insertedId': inserted_id,
-            'population': Yi,
-            'population_size': population_size
+            "insertedId": inserted_id,
+            "population": Yi,
+            "population_size": population_size,
         }
 
         samples = dowellSystematicSampling(systematicSamplingInput)
-        response = {
-            'samples': samples
-        }
-        if result == 'Table':
-            return render(request, 'result.html', {'response': response})
+        response = {"samples": samples}
+        if result == "Table":
+            return render(request, "result.html", {"response": response})
         return JsonResponse(response, safe=False)
+
 
 @csrf_exempt
 def simple_random_sampling(request):
-    if request.method == 'POST':
-        data = request.POST.get('data')
-        inserted_id = request.POST.get('insertedId')
-        N = request.POST.get('populationSize')
-        e = request.POST.get('e')
-        method = request.POST.get('samplingType')
-        n = dowellSampleSize(int(N),float(e))
-        result = request.POST.get('result')
-        if data == 'api':
+    if request.method == "POST":
+        data = request.POST.get("data")
+        inserted_id = request.POST.get("insertedId")
+        N = request.POST.get("populationSize")
+        e = request.POST.get("e")
+        method = request.POST.get("samplingType")
+        n = dowellSampleSize(int(N), float(e))
+        result = request.POST.get("result")
+        if data == "api":
             Yi = get_YI_data()
-        elif data == 'upload':
-            uploaded_file = request.FILES.get('file')
+        elif data == "upload":
+            uploaded_file = request.FILES.get("file")
             if uploaded_file:
                 df = pd.read_excel(uploaded_file)
                 list_of_lists = df.values.T.tolist()
                 Yi = list_of_lists
             else:
-                return JsonResponse({'error': 'No file uploaded.'})
-        
+                return JsonResponse({"error": "No file uploaded."})
+
         simpleRandomSamplingInput = {
-            'insertedId': inserted_id,
-            'Yi': Yi,
-            'N': int(N),
-            'e': float(e),
-            'method': method,
-            'n': n
+            "insertedId": inserted_id,
+            "Yi": Yi,
+            "N": int(N),
+            "e": float(e),
+            "method": method,
+            "n": n,
         }
 
         samples = dowellSimpleRandomSampling(simpleRandomSamplingInput)
-        response = {"samples": samples['sampleUnits']}
-        if result == 'Table':
-            return render(request, 'result.html', {'response': response})
+        response = {"samples": samples["sampleUnits"]}
+        if result == "Table":
+            return render(request, "result.html", {"response": response})
         return JsonResponse(response, safe=False)
+
 
 @csrf_exempt
 def purposive_sampling(request):
-    if request.method == 'POST':
-        data = request.POST.get('data')
-        inserted_id = request.POST.get('insertedId')
-        unit = request.POST.get('unit')
-        e = request.POST.get('e')
-        N = request.POST.get('N')
-        result = request.POST.get('result')
-        if data == 'api':
+    if request.method == "POST":
+        data = request.POST.get("data")
+        inserted_id = request.POST.get("insertedId")
+        unit = request.POST.get("unit")
+        e = request.POST.get("e")
+        N = request.POST.get("N")
+        result = request.POST.get("result")
+        if data == "api":
             Yi = get_YI_data()
-        elif data == 'upload':
-            uploaded_file = request.FILES.get('file')
+        elif data == "upload":
+            uploaded_file = request.FILES.get("file")
             if uploaded_file:
                 df = pd.read_excel(uploaded_file)
                 list_of_lists = df.values.T.tolist()
                 Yi = list_of_lists
             else:
-                return JsonResponse({'error': 'No file uploaded.'})
+                return JsonResponse({"error": "No file uploaded."})
         new_yi = sum(Yi, [])
         purposiveSamplingInput = {
-            'insertedId': inserted_id,
-            'Yi': new_yi,
-            'unit': unit,
-            'e': float(e),
-            'N': int(N),
+            "insertedId": inserted_id,
+            "Yi": new_yi,
+            "unit": unit,
+            "e": float(e),
+            "N": int(N),
         }
 
         samples = dowellPurposiveSampling(purposiveSamplingInput)
-        response = {
-            'samples': samples
-        }
-        if result == 'Table':
-            return render(request, 'result.html', {'response': response})
+        response = {"samples": samples}
+        if result == "Table":
+            return render(request, "result.html", {"response": response})
         return JsonResponse(response, safe=False)
 
 
 @csrf_exempt
 def cluster_sampling(request):
-    if request.method == 'POST':
-        data = request.POST.get('data')
-        M = request.POST.get('numberOfClusters')
-        inserted_id = request.POST.get('insertedId')
-        N = request.POST.get('populationSize')
-        e = request.POST.get('e')
-        hi = request.POST.get('sizeOfCluster')
-        result = request.POST.get('result')
+    if request.method == "POST":
+        data = request.POST.get("data")
+        M = request.POST.get("numberOfClusters")
+        inserted_id = request.POST.get("insertedId")
+        N = request.POST.get("populationSize")
+        e = request.POST.get("e")
+        hi = request.POST.get("sizeOfCluster")
+        result = request.POST.get("result")
         # Retrieve Yi data (you need to implement this)
-        if data == 'api':
+        if data == "api":
             Yi = get_YI_data()
-        elif data == 'upload':
-            uploaded_file = request.FILES.get('file')
+        elif data == "upload":
+            uploaded_file = request.FILES.get("file")
             if uploaded_file:
                 df = pd.read_excel(uploaded_file)
                 list_of_lists = df.values.T.tolist()
                 Yi = list_of_lists
             else:
-                return JsonResponse({'error': 'No file uploaded.'})
-        
+                return JsonResponse({"error": "No file uploaded."})
+
         clusterSamplingInput = {
-            'Yi': Yi,
-            'e': float(e),
-            'N': int(N),
-            'M': int(M),
-            'hi': int(hi)
+            "Yi": Yi,
+            "e": float(e),
+            "N": int(N),
+            "M": int(M),
+            "hi": int(hi),
         }
 
         samples = dowellClusterSampling(clusterSamplingInput)
-        response = {
-            'samples': samples
-        }
-        
-        if result == 'Table':
-            return render(request, 'result.html', {'response': response})
+        response = {"samples": samples}
+
+        if result == "Table":
+            return render(request, "result.html", {"response": response})
         return JsonResponse(response, safe=False)
+
 
 @csrf_exempt
 def stratified_sampling(request):
-    if request.method == 'POST':
-        data = request.POST.get('data')
-        inserted_id = request.POST.get('insertedId')
-        allocation_type = request.POST.get('allocationType')
-        sampling_type = request.POST.get('samplingType')
-        replacement = request.POST.get('replacement') == 'true'
-        populationSize = request.POST.get('populationSize')
-        result = request.POST.get('result')
-        if data == 'api':
+    if request.method == "POST":
+        data = request.POST.get("data")
+        inserted_id = request.POST.get("insertedId")
+        allocation_type = request.POST.get("allocationType")
+        sampling_type = request.POST.get("samplingType")
+        replacement = request.POST.get("replacement") == "true"
+        populationSize = request.POST.get("populationSize")
+        result = request.POST.get("result")
+        if data == "api":
             Yi = get_YI_data()
-        elif data == 'upload':
-            uploaded_file = request.FILES.get('file')
+        elif data == "upload":
+            uploaded_file = request.FILES.get("file")
             if uploaded_file:
                 df = pd.read_excel(uploaded_file)
                 list_of_lists = df.values.T.tolist()
                 Yi = list_of_lists
             else:
-                return JsonResponse({'error': 'No file uploaded.'})
-        
+                return JsonResponse({"error": "No file uploaded."})
+
         stratifiedSamplingInput = {
-            'insertedId': inserted_id,
-            'e': 0.1,
-            'allocationType': allocation_type,
-            'samplingType': sampling_type,
-            'replacement': replacement,
-            'Yi': Yi,
-            'populationSize': populationSize
+            "insertedId": inserted_id,
+            "e": 0.1,
+            "allocationType": allocation_type,
+            "samplingType": sampling_type,
+            "replacement": replacement,
+            "Yi": Yi,
+            "populationSize": populationSize,
         }
 
         samples = dowellStratifiedSampling(stratifiedSamplingInput)
         id = get_event_id()
-        response = {
-            'samples': samples
-        }
-        response = {"event_id":id['event_id'],"samples": samples['sampleUnits']}
-        
-        if result == 'Table':
-            return render(request, 'result.html', {'response': response})
+        response = {"samples": samples}
+        response = {"event_id": id["event_id"], "samples": samples["sampleUnits"]}
+
+        if result == "Table":
+            return render(request, "result.html", {"response": response})
         return JsonResponse(response, safe=False)
 
+
 from django.core.files.storage import default_storage
+
+
 @csrf_exempt
-@api_view(['POST'])
+@api_view(["POST"])
 def dowell_search(request):
-    if request.method == 'POST':
+    if request.method == "POST":
         payload = request.data
-        print('payload', payload)
-        data_type = payload.get('data_type')
-        if data_type == 'api':
-            search_count = int(payload.get('search_count', 0))
+        print("payload", payload)
+        data_type = payload.get("data_type")
+        if data_type == "api":
+            search_count = int(payload.get("search_count", 0))
             search_criteria = []
             manual_data = None
-            user_field = payload.get('user_field', {})
+            user_field = payload.get("user_field", {})
 
             for i in range(search_count):
-                key = payload.get(f'key{i}', '')
-                value = payload.get(f'value{i}', '')
+                key = payload.get(f"key{i}", "")
+                value = payload.get(f"value{i}", "")
                 search_criteria.append((key, value))
-                
-            sample_values = dowell_purposive_sampling(search_criteria, user_field,manual_data)
+
+            sample_values = dowell_purposive_sampling(
+                search_criteria, user_field, manual_data
+            )
             return Response(sample_values)
-        elif data_type == 'upload':
-            print('upload data')
-            search_count = int(payload.get('search_count', 0))
-            uploaded_data = request.FILES.get('_file')
-            user_field ={
-        "cluster": "license",
-        "database": "license",
-        "collection": "licenses",
-        "document": "licenses",
-        "team_member_ID": "689044433",
-        "function_ID": "ABCDE",
-        "command": "fetch",
-        "field": {},
-        "update_field": None,
-        "platform": "bangalore"
-    }
+        elif data_type == "upload":
+            print("upload data")
+            search_count = int(payload.get("search_count", 0))
+            uploaded_data = request.FILES.get("_file")
+            user_field = {
+                "cluster": "license",
+                "database": "license",
+                "collection": "licenses",
+                "document": "licenses",
+                "team_member_ID": "689044433",
+                "function_ID": "ABCDE",
+                "command": "fetch",
+                "field": {},
+                "update_field": None,
+                "platform": "bangalore",
+            }
             search_criteria = []
             manual_data = None
-            
 
             for i in range(search_count):
-                key = payload.get(f'key{i}', '')
-                value = payload.get(f'value{i}', '')
+                key = payload.get(f"key{i}", "")
+                value = payload.get(f"value{i}", "")
                 search_criteria.append((key, value))
-            
+
             if uploaded_data:
-                print('uploaded_data', uploaded_data)
-                file_path = default_storage.save(uploaded_data.name, uploaded_data)  # Save the uploaded file
-                with default_storage.open(file_path, 'r') as file:
+                print("uploaded_data", uploaded_data)
+                file_path = default_storage.save(
+                    uploaded_data.name, uploaded_data
+                )  # Save the uploaded file
+                with default_storage.open(file_path, "r") as file:
                     json_data = json.load(file)
                     manual_data = json_data
-                    sample_values = dowell_purposive_sampling(search_criteria, user_field, manual_data)
+                    sample_values = dowell_purposive_sampling(
+                        search_criteria, user_field, manual_data
+                    )
                     return Response(sample_values)
-        
-        
-
+        else:
+            return Response({"error": "Invalid data type select api or upload"})
+    else:
+        return Response({"error": "Invalid request method."})
 
 
 @csrf_exempt
 def search(request):
-    return render(request, 'search_function.html')
-
+    return render(request, "search_function.html")
 
 
 def sampling_input(request):
-    return render(request, 'sampling_inputs.html')
+    return render(request, "sampling_inputs.html")
+
 
 def stratified_sampling_input(request):
-    return render(request, 'stratified_sampling_input.html')
+    return render(request, "stratified_sampling_input.html")
+
 
 def systematic_sampling_input(request):
-    return render(request, 'systematic_sampling_input.html')
+    return render(request, "systematic_sampling_input.html")
+
 
 def simple_random_sampling_input(request):
-    return render(request, 'simple_random_sampling_input.html')
+    return render(request, "simple_random_sampling_input.html")
+
 
 def cluster_sampling_input(request):
-    return render(request, 'cluster_sampling_input.html')
+    return render(request, "cluster_sampling_input.html")
+
 
 def purposive_sampling_input(request):
-    return render(request, 'purposive_sampling_input.html')
+    return render(request, "purposive_sampling_input.html")
 
 
-
-
-'''
+"""
 Types of sampling
 1. Stratified Random Sampling
 Request
@@ -391,4 +396,4 @@ Response
 
 }
 
-'''
+"""
