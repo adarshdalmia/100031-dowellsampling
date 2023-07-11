@@ -15,7 +15,6 @@ from rest_framework.response import Response
 from .functions.searchFunction import dowell_purposive_sampling
 import json
 import requests
-import pprint
 
 
 @csrf_exempt

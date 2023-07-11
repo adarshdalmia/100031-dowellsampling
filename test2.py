@@ -30,18 +30,18 @@ def calculate_sample_size(population_size, confidence_level, margin_of_error, fi
     return sample_size_rounded
 
 
-# Finite population example
-population_size = 400
-confidence_level = 0.99
-margin_of_error = 0.05
+# # Finite population example
+# population_size = 400
+# confidence_level = 0.99
+# margin_of_error = 0.05
 
-sample_size = calculate_sample_size(population_size, confidence_level, margin_of_error, finite_population=True)
-print(f"The required sample size for a finite population is: {sample_size}")
+# sample_size = calculate_sample_size(population_size, confidence_level, margin_of_error, finite_population=True)
+# print(f"The required sample size for a finite population is: {sample_size}")
 
-# Infinite population example
-population_size = 10000
-confidence_level = 0.99
-margin_of_error = 0.05
+# # Infinite population example
+# population_size = 10000
+# confidence_level = 0.99
+# margin_of_error = 0.05
 
-sample_size = calculate_sample_size(population_size, confidence_level, margin_of_error)
-print(f"The required sample size for an infinite population is: {sample_size}")
+# sample_size = calculate_sample_size(population_size, confidence_level, margin_of_error)
+# print(f"The required sample size for an infinite population is: {sample_size}")
