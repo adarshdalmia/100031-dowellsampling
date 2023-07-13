@@ -1,3 +1,4 @@
+import os
 import pandas as pd
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
@@ -307,13 +308,16 @@ def dowell_search(request):
                 file_path = default_storage.save(
                     uploaded_data.name, uploaded_data
                 )  # Save the uploaded file
-                with default_storage.open(file_path, "r") as file:
-                    json_data = json.load(file)
-                    manual_data = json_data
-                    sample_values = dowell_purposive_sampling(
-                        search_criteria, user_field, manual_data
-                    )
-                    return Response(sample_values)
+                try:
+                    with default_storage.open(file_path, "r") as file:
+                        json_data = json.load(file)
+                        manual_data = json_data
+                        sample_values = dowell_purposive_sampling(
+                            search_criteria, user_field, manual_data
+                        )
+                        return Response(sample_values)
+                finally:
+                    os.remove(file_path)
         else:
             return Response({"error": "Invalid data type select api or upload"})
     else:
