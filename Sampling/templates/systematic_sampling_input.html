@@ -11,6 +11,7 @@
     <div class="col-sm-12 col-md-6 offset-md-3">
       <form method="POST" action="{% url 'systematic_sampling' %}" enctype="multipart/form-data">
         {% csrf_token %}
+
         <div class="form-group">
           <label for="insertedId">Inserted ID:</label>
           <input type="text" class="form-control" id="insertedId" name="insertedId" required>
@@ -31,6 +32,7 @@
           <select class="form-control" id="data" name="data" required>
             <option value="api">API</option>
             <option value="upload">Upload</option>
+            <option value="link">Link</option>
           </select>
         </div>
 
@@ -38,13 +40,20 @@
           <label for="file">Upload File:</label>
           <input type="file" id="file" name="file" accept=".xlsx, .xls">
         </div>
+
+        <div id="linkContainer" style="display: none;">
+          <label for="link">Paste Link:</label>
+          <input type="text" class="form-control" id="link" name="link">
+        </div>
+
         <div class="form-group">
-          <label for="samplingType">Result Type:</label>
-          <select class="form-control" id="result" name="result" >
+          <label for="result">Result Type:</label>
+          <select class="form-control" id="result" name="result">
             <option value="API">API</option>
             <option value="Table">Table</option>
           </select>
         </div>
+
         <button type="submit" class="btn btn-primary">Submit</button>
       </form>
     </div>
@@ -54,12 +63,18 @@
 <script>
   var dataSelectElement = document.getElementById("data");
   var uploadContainer = document.getElementById("uploadContainer");
+  var linkContainer = document.getElementById("linkContainer");
 
   dataSelectElement.addEventListener("change", function () {
     if (dataSelectElement.value === "upload") {
       uploadContainer.style.display = "block";
+      linkContainer.style.display = "none";
+    } else if (dataSelectElement.value === "link") {
+      uploadContainer.style.display = "none";
+      linkContainer.style.display = "block";
     } else {
       uploadContainer.style.display = "none";
+      linkContainer.style.display = "none";
     }
   });
 </script>

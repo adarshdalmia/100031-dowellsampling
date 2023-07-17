@@ -72,7 +72,7 @@ def get_YI_data():
     data = response["finalOutput"]
     return data
 
-
+@csrf_exempt
 def systematic_sampling(request):
     if request.method == "POST":
         data = request.POST.get("data")
@@ -89,6 +89,16 @@ def systematic_sampling(request):
                 Yi = list_of_lists
             else:
                 return JsonResponse({"error": "No file uploaded."})
+        elif data == "link":
+            excel_link = request.POST.get("link")
+            if excel_link:
+                df = pd.read_excel(excel_link)
+                list_of_lists = df.values.T.tolist()
+                Yi = list_of_lists
+            else:
+                return JsonResponse({"error": "No link provided."})
+        else:
+            return JsonResponse({"error": "Invalid data option."})
 
         systematicSamplingInput = {
             "insertedId": inserted_id,
@@ -123,6 +133,16 @@ def simple_random_sampling(request):
                 Yi = list_of_lists
             else:
                 return JsonResponse({"error": "No file uploaded."})
+        elif data == "link":
+            excel_link = request.POST.get("link")
+            if excel_link:
+                df = pd.read_excel(excel_link)
+                list_of_lists = df.values.T.tolist()
+                Yi = list_of_lists
+            else:
+                return JsonResponse({"error": "No link provided."})
+        else:
+            return JsonResponse({"error": "Invalid data option."})
 
         simpleRandomSamplingInput = {
             "insertedId": inserted_id,
@@ -138,6 +158,7 @@ def simple_random_sampling(request):
         if result == "Table":
             return render(request, "result.html", {"response": response})
         return JsonResponse(response, safe=False)
+
 
 
 @csrf_exempt
@@ -159,6 +180,17 @@ def purposive_sampling(request):
                 Yi = list_of_lists
             else:
                 return JsonResponse({"error": "No file uploaded."})
+        elif data == "link":
+            excel_link = request.POST.get("link")
+            if excel_link:
+                df = pd.read_excel(excel_link)
+                list_of_lists = df.values.T.tolist()
+                Yi = list_of_lists
+            else:
+                return JsonResponse({"error": "No link provided."})
+        else:
+            return JsonResponse({"error": "Invalid data option."})
+
         new_yi = sum(Yi, [])
         purposiveSamplingInput = {
             "insertedId": inserted_id,
@@ -196,6 +228,16 @@ def cluster_sampling(request):
                 Yi = list_of_lists
             else:
                 return JsonResponse({"error": "No file uploaded."})
+        elif data == "link":
+            excel_link = request.POST.get("link")
+            if excel_link:
+                df = pd.read_excel(excel_link)
+                list_of_lists = df.values.T.tolist()
+                Yi = list_of_lists
+            else:
+                return JsonResponse({"error": "No link provided."})
+        else:
+            return JsonResponse({"error": "Invalid data option."})
 
         clusterSamplingInput = {
             "Yi": Yi,
@@ -211,6 +253,7 @@ def cluster_sampling(request):
         if result == "Table":
             return render(request, "result.html", {"response": response})
         return JsonResponse(response, safe=False)
+
 
 
 @csrf_exempt
