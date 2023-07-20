@@ -3,3 +3,4 @@ __py_cache__/
 **/Sampling/Sampling/__pycache__
 **/Sampling/API/functions/__pycache__
 **/Sampling/API/migrations/__pycache__
+/thunder-tests

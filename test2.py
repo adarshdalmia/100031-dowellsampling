@@ -1,47 +1,56 @@
-import math
+import random
 
-def calculate_sample_size(population_size, confidence_level, margin_of_error, finite_population=False):
-    z = 0.0
-    if confidence_level == 0.90:
-        z = 1.645
-    elif confidence_level == 0.95:
-        z = 1.96
-    elif confidence_level == 0.99:
-        z = 2.576
-    else:
-        raise ValueError("Invalid confidence level. Supported values: 0.90, 0.95, 0.99")
-    if finite_population:
-        p = 0.5  # Assuming worst-case scenario where p = 0.5
-        q = 1 - p
-        e = margin_of_error
+def dowellsnowballsampling(population_units, population_size, sample_size, reference):
+    sample_units = []
+    process_time = 0
+    
+    # Function to calculate the sample size using Dowell's formula
+    def dowellsamplesize():
+        return int((population_size * sample_size) / (population_size + sample_size - 1))
 
-        numerator = (z ** 2) * p * q
-        denominator = (e ** 2) * (1 + (((z ** 2) * p * q) / (e ** 2 * population_size)))
+    # Function to find a random unit from the population
+    def select_random_unit():
+        return random.choice(population_units)
 
-        sample_size = numerator / denominator
-        sample_size_rounded = math.ceil(sample_size)
-    else:
-        p = 0.5  # Assuming worst-case scenario where p = 0.5
-        e = margin_of_error
-        q = 1 - p
-        sample_size = (z ** 2 * p * q) / (e ** 2)
-        sample_size_rounded = math.ceil(sample_size)
+    # Function to find a connection/reference for a given unit
+    def find_connection(unit):
+        while True:
+            connection = input(f"Find a connection/reference for unit '{unit}': ")
+            if connection == reference:
+                print("Reference cannot be the same as the original unit.")
+            else:
+                return connection
 
-    return sample_size_rounded
+    # Ask user to select the first unit to be included in the sample
+    first_unit = input("Select the first unit to include in the sample: ")
+    sample_units.append(first_unit)
+    process_time += 1
 
+    # Loop to select subsequent units using Dowell's Snowball Sampling method
+    while len(sample_units) < sample_size:
+        current_unit = select_random_unit()
+        process_time += 1
 
-# # Finite population example
-# population_size = 400
-# confidence_level = 0.99
-# margin_of_error = 0.05
+        # Find a connection/reference for the current unit
+        connection = find_connection(current_unit)
+        process_time += 1
 
-# sample_size = calculate_sample_size(population_size, confidence_level, margin_of_error, finite_population=True)
-# print(f"The required sample size for a finite population is: {sample_size}")
+        # Check if the connection is not already in the sample
+        if connection not in sample_units:
+            sample_units.append(connection)
+        else:
+            print("Selected connection already exists in the sample. Select another connection.")
 
-# # Infinite population example
-# population_size = 10000
-# confidence_level = 0.99
-# margin_of_error = 0.05
+    return sample_units, process_time
 
-# sample_size = calculate_sample_size(population_size, confidence_level, margin_of_error)
-# print(f"The required sample size for an infinite population is: {sample_size}")
+# Example usage
+if __name__ == "__main__":
+    population_units = ["insta profile", "same post", "refer another", "different post"]
+    population_size = len(population_units)
+    
+    sample_size = int(input("Enter the desired sample size: "))
+    reference = input("Enter the reference to a particular thing: ")
+
+    result, time_taken = dowellsnowballsampling(population_units, population_size, sample_size, reference)
+    print("Sample Units:", result)
+    print("Process Time:", time_taken)
