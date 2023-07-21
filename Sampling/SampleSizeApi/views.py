@@ -4,16 +4,15 @@ from django.views.decorators.http import require_POST
 
 from django.views.decorators.csrf import csrf_exempt
 import math
+from urllib.parse import urlparse, parse_qs
 
 @csrf_exempt
-@require_POST
-def calculate_sample_size(request):
+def calculate_sample_size(request,population):
+    print(population)
     try:
         data = json.loads(request.body)
         population_size = int(data.get('population_size', 0))
         margin_of_error = float(data.get('margin_of_error', 0))
-        population = data.get('population', '')
-        print(population)
         print(population_size)
         print(margin_of_error)
         if population_size <= 0 or margin_of_error <= 0:
@@ -29,7 +28,7 @@ def calculate_sample_size(request):
     except Exception as e:
         return JsonResponse({'error': str(e)}, status=400)
 
-def dowellSampleSize(population_size, margin_of_error, population, confidence_level=0.99):
+def dowellSampleSize(population_size, margin_of_error, population, confidence_level):
     z = 0.0
     if confidence_level == 0.90:
         z = 1.645

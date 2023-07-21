@@ -152,15 +152,34 @@
         "containerId": "",
         "name": "http://127.0.0.1:8000/sample-size/",
         "url": "http://127.0.0.1:8000/sample-size/",
-        "method": "POST",
+        "method": "GET",
         "sortNum": 0,
         "created": "2023-07-20T12:52:01.503Z",
-        "modified": "2023-07-20T12:56:38.727Z",
+        "modified": "2023-07-21T12:52:31.295Z",
         "headers": [],
         "params": [],
         "body": {
             "type": "json",
-            "raw": "{\n  \"population_size\": 1000,\n  \"margin_of_error\": 0.1,\n  \"population\": \"finite\"\n}",
+            "raw": "{\n  \"population_size\": 1000,\n  \"margin_of_error\": 0.1,\n  \"population\": \"infinite\",\n  \"confidence_level\":0.95\n}",
+            "form": []
+        },
+        "tests": []
+    },
+    {
+        "_id": "1b64f582-8953-437f-9e66-714f469e2167",
+        "colId": "history",
+        "containerId": "",
+        "name": "http://localhost:8000/calculate_sample_size?population=finite",
+        "url": "http://127.0.0.1:8000/sample-size/finite/",
+        "method": "POST",
+        "sortNum": 0,
+        "created": "2023-07-21T12:49:08.630Z",
+        "modified": "2023-07-21T12:59:17.333Z",
+        "headers": [],
+        "params": [],
+        "body": {
+            "type": "json",
+            "raw": "{\n  \"population_size\": 1000,\n  \"margin_of_error\": 0.1,\n  \"confidence_level\":0.95\n}",
             "form": []
         },
         "tests": []
