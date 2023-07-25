@@ -1,69 +1,72 @@
 import json
+import math
 from django.http import JsonResponse
 from django.views.decorators.http import require_POST
-
 from django.views.decorators.csrf import csrf_exempt
-import math
-from urllib.parse import urlparse, parse_qs
 
 @csrf_exempt
-def calculate_sample_size(request,population):
-    print(population)
+def calculate_sample_size(request):
     try:
         data = json.loads(request.body)
-        population_size = int(data.get('population_size', 0))
-        margin_of_error = float(data.get('margin_of_error', 0))
-        print(population_size)
-        print(margin_of_error)
-        if population_size <= 0 or margin_of_error <= 0:
-            return JsonResponse({'error': 'Invalid input. Population size and margin of error must be positive.'}, status=400)
+        population_size = data.get('population_size')
+        error = float(data.get('error', 0))
+        confidence_level = float(data.get('confidence_level', 0.95))
+        standard_deviation = data.get('standard_deviation')
 
-        try:
-            confidence_level = float(data.get('confidence_level', 0.99))
-        except ValueError:
-            return JsonResponse({'error': 'Invalid confidence level. Supported values: 0.90, 0.95, 0.99'}, status=400)
+        if population_size is not None:
+            population_size = int(population_size)
+            if population_size <= 0 or error <= 0:
+                return JsonResponse({'error': 'Invalid input. Population size and error must be positive.'}, status=400)
+            if standard_deviation is not None:
+                standard_deviation = float(standard_deviation)
+                sample_size = calculate_sample_size_with_known_sd(population_size, error, confidence_level, standard_deviation)
+            else:
+                sample_size = calculate_sample_size_using_slovin(population_size, error)
+        else:
+            if standard_deviation is not None:
+                standard_deviation = float(standard_deviation)
+                sample_size = calculate_sample_size_without_pop_size(error,confidence_level, standard_deviation)
+            else:
+                sample_size = calculate_sample_size_using_slovin(population_size, error)
 
-        sample_size = dowellSampleSize(population_size, margin_of_error, population, confidence_level)
         return JsonResponse({'sample_size': sample_size})
     except Exception as e:
         return JsonResponse({'error': str(e)}, status=400)
 
-def dowellSampleSize(population_size, margin_of_error, population, confidence_level):
-    z = 0.0
+def calculate_sample_size_with_known_sd(population_size, error, confidence_level, standard_deviation):
+    z = get_z_score(confidence_level)
+    p = 0.5 
+    q = 1 - p
+
+    numerator = (z ** 2) * p * q
+    denominator = (error ** 2) * (1 + (((z ** 2) * p * q) / (error ** 2 * population_size)))
+
+    sample_size = numerator / denominator
+    return math.ceil(sample_size)
+
+def calculate_sample_size_using_slovin(population_size, error):
+    sample_size = population_size / (1 + population_size * error ** 2)
+    sample_size_rounded = math.ceil(sample_size)
+    if 1 < sample_size_rounded < 500:
+        return sample_size_rounded
+    else:
+        return "Sample size is not adequate"
+
+def calculate_sample_size_without_pop_size(error, confidence_level, standard_deviation):
+    z = get_z_score(confidence_level)
+    p = 0.5  # Assuming worst-case scenario where p = 0.5
+
+    sample_size = (z ** 2 * p * (1 - p)) / (error ** 2)
+    return math.ceil(sample_size)
+
+
+
+def get_z_score(confidence_level):
     if confidence_level == 0.90:
-        z = 1.645
+        return 1.645
     elif confidence_level == 0.95:
-        z = 1.96
+        return 1.96
     elif confidence_level == 0.99:
-        z = 2.576
+        return 2.576
     else:
         raise ValueError("Invalid confidence level. Supported values: 0.90, 0.95, 0.99")
-
-    if population == "finite":
-        p = 0.5  # Assuming worst-case scenario where p = 0.5
-        q = 1 - p
-        e = margin_of_error
-
-        numerator = (z ** 2) * p * q
-        denominator = (e ** 2) * (1 + (((z ** 2) * p * q) / (e ** 2 * population_size)))
-
-        sample_size = numerator / denominator
-        sample_size_rounded = math.ceil(sample_size)
-    elif population == "infinite":
-        p = 0.5  # Assuming worst-case scenario where p = 0.5
-        e = margin_of_error
-        q = 1 - p
-        sample_size = (z ** 2 * p * q) / (e ** 2)
-        sample_size_rounded = math.ceil(sample_size)
-    elif population == "slovins":
-        e = margin_of_error
-        sample_size = population_size / (1 + population_size * e * e)
-        sample_size_rounded = math.ceil(sample_size)
-        if sample_size_rounded > 1 and sample_size_rounded < 500:
-            return sample_size_rounded
-        else:
-            return "Sample size is not adequate"
-    else:
-        raise ValueError("Invalid population type. Supported values: 'finite', 'infinite', 'slovins'")
-    
-    return sample_size_rounded
