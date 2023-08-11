@@ -75,90 +75,108 @@ def get_YI_data():
 @csrf_exempt
 def systematic_sampling(request):
     if request.method == "POST":
-        data = request.POST.get("data")
-        inserted_id = request.POST.get("insertedId")
-        population_size = request.POST.get("populationSize")
-        result = request.POST.get("result")
-        if data == "api":
-            Yi = get_YI_data()
-        elif data == "upload":
-            uploaded_file = request.FILES.get("file")
-            if uploaded_file:
-                df = pd.read_excel(uploaded_file)
-                list_of_lists = df.values.T.tolist()
-                Yi = list_of_lists
-            else:
-                return JsonResponse({"error": "No file uploaded."})
-        elif data == "link":
-            excel_link = request.POST.get("link")
-            if excel_link:
-                df = pd.read_excel(excel_link)
-                list_of_lists = df.values.T.tolist()
-                Yi = list_of_lists
-            else:
-                return JsonResponse({"error": "No link provided."})
-        else:
-            return JsonResponse({"error": "Invalid data option."})
+        try:
+            data = json.loads(request.body)
+            inserted_id = data.get("insertedId")
+            population_size = data.get("populationSize")
+            result = data.get("result")
+            data_type = data.get("data")
 
-        systematicSamplingInput = {
-            "insertedId": inserted_id,
-            "population": Yi,
-            "population_size": population_size,
-        }
+            if data_type == "api":
+                Yi = get_YI_data()
+            elif data_type == "upload":
+                uploaded_file = data.get("file")
+                if uploaded_file:
+                    df = pd.read_excel(uploaded_file)
+                    list_of_lists = df.values.T.tolist()
+                    Yi = list_of_lists
+                else:
+                    return JsonResponse({"error": "No file uploaded."})
+            elif data_type == "link":
+                excel_link = data.get("link")
+                if excel_link:
+                    df = pd.read_excel(excel_link)
+                    list_of_lists = df.values.T.tolist()
+                    Yi = list_of_lists
+                else:
+                    return JsonResponse({"error": "No link provided."})
+            else:
+                return JsonResponse({"error": "Invalid data option."})
 
-        samples = dowellSystematicSampling(systematicSamplingInput)
-        response = {"samples": samples}
-        if result == "Table":
-            return render(request, "result.html", {"response": response})
-        return JsonResponse(response, safe=False)
+            systematicSamplingInput = {
+                "insertedId": inserted_id,
+                "population": Yi,
+                "population_size": population_size,
+            }
+
+            samples = dowellSystematicSampling(systematicSamplingInput)
+            response = {"samples": samples}
+
+            if result == "Table":
+                return render(request, "result.html", {"response": response})
+            return JsonResponse(response, safe=False)
+
+        except Exception as e:
+            return JsonResponse({"error": str(e)})
+
+    return JsonResponse({"error": "Invalid request method."})
 
 
 @csrf_exempt
 def simple_random_sampling(request):
     if request.method == "POST":
-        data = request.POST.get("data")
-        inserted_id = request.POST.get("insertedId")
-        N = request.POST.get("populationSize")
-        e = request.POST.get("e")
-        method = request.POST.get("samplingType")
-        n = dowellSampleSize(int(N), float(e))
-        result = request.POST.get("result")
-        if data == "api":
-            Yi = get_YI_data()
-        elif data == "upload":
-            uploaded_file = request.FILES.get("file")
-            if uploaded_file:
-                df = pd.read_excel(uploaded_file)
-                list_of_lists = df.values.T.tolist()
-                Yi = list_of_lists
+        try:
+            data = json.loads(request.body)
+            print(data)
+            inserted_id = data.get("insertedId")
+            N = data.get("populationSize")
+            e = data.get("e")
+            method = data.get("samplingType")
+            n = dowellSampleSize(int(N), float(e))
+            result = data.get("result")
+            data_type = data.get("data")
+
+            if data_type == "api":
+                Yi = get_YI_data()
+            elif data_type == "upload":
+                uploaded_file = data.get("file")
+                if uploaded_file:
+                    df = pd.read_excel(uploaded_file)
+                    list_of_lists = df.values.T.tolist()
+                    Yi = list_of_lists
+                else:
+                    return JsonResponse({"error": "No file uploaded."})
+            elif data_type == "link":
+                excel_link = data.get("link")
+                if excel_link:
+                    df = pd.read_excel(excel_link)
+                    list_of_lists = df.values.T.tolist()
+                    Yi = list_of_lists
+                else:
+                    return JsonResponse({"error": "No link provided."})
             else:
-                return JsonResponse({"error": "No file uploaded."})
-        elif data == "link":
-            excel_link = request.POST.get("link")
-            if excel_link:
-                df = pd.read_excel(excel_link)
-                list_of_lists = df.values.T.tolist()
-                Yi = list_of_lists
-            else:
-                return JsonResponse({"error": "No link provided."})
-        else:
-            return JsonResponse({"error": "Invalid data option."})
+                return JsonResponse({"error": "Invalid data option."})
 
-        simpleRandomSamplingInput = {
-            "insertedId": inserted_id,
-            "Yi": Yi,
-            "N": int(N),
-            "e": float(e),
-            "method": method,
-            "n": n,
-        }
+            simpleRandomSamplingInput = {
+                "insertedId": inserted_id,
+                "Yi": Yi,
+                "N": int(N),
+                "e": float(e),
+                "method": method,
+                "n": n,
+            }
 
-        samples = dowellSimpleRandomSampling(simpleRandomSamplingInput)
-        response = {"samples": samples["sampleUnits"]}
-        if result == "Table":
-            return render(request, "result.html", {"response": response})
-        return JsonResponse(response, safe=False)
+            samples = dowellSimpleRandomSampling(simpleRandomSamplingInput)
+            response = {"samples": samples["sampleUnits"]}
 
+            if result == "Table":
+                return render(request, "result.html", {"response": response})
+            return JsonResponse(response, safe=False)
+
+        except Exception as e:
+            return JsonResponse({"error": str(e)})
+
+    return JsonResponse({"error": "Invalid request method."})
 
 
 @csrf_exempt
