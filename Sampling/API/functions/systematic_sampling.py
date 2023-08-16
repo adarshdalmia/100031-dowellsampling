@@ -23,6 +23,7 @@ def dowellSystematicSampling(systematicSamplingInput):
     N = int(systematicSamplingInput['population_size'])
     e = 0.05 # desired margin of error (5%)
     n = dowellSampleSize(N, e)
+    print(n)
     # n = 9
     # check if N divides n without remainder
     if N % n == 0:
