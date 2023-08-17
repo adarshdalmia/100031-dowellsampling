@@ -6,8 +6,9 @@ def dowellPurposiveSampling(purposeiveSamplingInput):
     n = dowellSampleSize(N, e)
     Yi = purposeiveSamplingInput['Yi']
     unit = purposeiveSamplingInput['unit']
-    unit = unit.split(",")
+    # unit = unit.split(",")
     print(n)
+    print(f"unit : {unit}")
     sample_values = []
     unit_copy = unit[:]  # Make a copy of the unit list
     while len(sample_values) < n:
