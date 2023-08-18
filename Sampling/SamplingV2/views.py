@@ -5,23 +5,14 @@ from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse, HttpResponse
 import json
 import requests
+
+from API.functions.API_Key_System import processApikey
 from API.functions.stratifiedSampling import dowellStratifiedSampling
 from API.functions.sampleSize import dowellSampleSize
 from API.functions.systematic_sampling import dowellSystematicSampling
 from API.functions.simpleRandomSampling import dowellSimpleRandomSampling
 from API.functions.clusterSampling import dowellClusterSampling
 from API.functions.purposiveSampling import dowellPurposiveSampling
-
-
-def processApikey(api_key):
-    url = f'https://100105.pythonanywhere.com/api/v3/process-services/?type=api_service&api_key={api_key}'
-    payload = {
-        "service_id": "DOWELL10011"
-        # "service_id": "DOWELL10011"
-    }
-
-    response = requests.post(url, json=payload)
-    return response.text
 
 
 @csrf_exempt

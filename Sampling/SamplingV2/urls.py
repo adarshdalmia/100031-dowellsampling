@@ -4,6 +4,8 @@
 from django.urls import path
 from . import views
 
+
+
 app_name = "SamplingV2"
 urlpatterns = [
     # path('samplingv2/<str:api_key>', views.samplingv2, name='samplingv2'),
