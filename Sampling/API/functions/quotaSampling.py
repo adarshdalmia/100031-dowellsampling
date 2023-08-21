@@ -3,7 +3,7 @@ from purposiveSampling import dowellPurposiveSampling
 import time
 
 
-def quota_sampling(population_units, population_size, unit):
+def dowellQuotaSampling(population_units, population_size, unit):
     process_time = 0
     n = dowellSampleSize(population_units, margin_of_error=0.05)
     quotas = []
