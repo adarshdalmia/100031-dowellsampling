@@ -3,35 +3,7 @@ from purposiveSampling import dowellPurposiveSampling
 import time
 
 
-# def quota_sampling(population_units, population_size):
-import requests
-import json
-
-insertedId = input("Enter InsertID:")
-
-
-def populationUnits(insertedId):
-
-    url = "http://100061.pythonanywhere.com/api/"
-
-    payload = json.dumps({
-        "inserted_id": insertedId,
-    })
-
-    headers = {
-        'Content-Type': 'application/json'
-    }
-
-    response = requests.request(
-        "POST", url, headers=headers, data=payload).json()
-    Yi = response['classifiedData']
-
-    return Yi
-
-
 def quota_sampling(population_units, population_size, unit):
-    # population_units = eval(input("Enter population unit: "))
-    # population_size = int(input("Enter population size: "))
     process_time = 0
     n = dowellSampleSize(population_units, margin_of_error=0.05)
     quotas = []
