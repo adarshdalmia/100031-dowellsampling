@@ -1,5 +1,5 @@
-from sampleSize import dowellSampleSize
-from purposiveSampling import dowellPurposiveSampling
+from API.functions.sampleSize import dowellSampleSize
+from API.functions.purposiveSampling import dowellPurposiveSampling
 import time
 
 
