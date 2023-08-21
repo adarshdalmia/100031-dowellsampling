@@ -89,7 +89,7 @@ def sample_size(request):
 def sample_size_api(request, api_key):
     if (request.method=="POST"):
         data=json.loads(request.body)
-        validate_api_count = processApikey(api_key, "DOWELL100011")
+        validate_api_count = processApikey(api_key, "DOWELL10032")
         data_count = json.loads(validate_api_count)
         if data_count['success'] :
             if data_count['count'] >= 0:
