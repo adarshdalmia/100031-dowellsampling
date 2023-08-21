@@ -64,19 +64,18 @@ def get_YI_data():
     return data
 
 
-def get_YI_data_systematic():
+def get_YI_data_new():
     hardcoded_data = [
         "Apple", "Banana", "Cherry", "Date", "Fig",
         "Grape", "Kiwi", "Lemon", "Mango", "Orange",
         "Peach", "Pear", "Quince", "Raspberry", "Strawberry",
-        "Watermelon", "Blueberry", "Pineapple", "Pomegranate", "Guava"
+        "Watermelon", "Blueberry", "Pineapple", "Pomegranate", "Guava",
+        "Jackfruit", "Apricot", "Avocado", "Blackberry", "Blackcurrant",
+        "Coconut", "Custard apple", "Dragonfruit", "Durian", "Elderberry",
+        "Feijoa", "Gooseberry", "Grapefruit", "Honeyberry", "Huckleberry",
     ]
     return hardcoded_data
 
-
-def get_YI_data_simplerandom():
-    hardcoded_data = [11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25]
-    return hardcoded_data
 
 @csrf_exempt
 def systematic_sampling(request):
@@ -92,7 +91,7 @@ def systematic_sampling(request):
             data_type = json_data.get("data")
 
             if data_type == "api":
-                Yi = get_YI_data_systematic()
+                Yi = get_YI_data_new()
             elif data_type == "upload":
                 uploaded_file = request.FILES.get('file')
                 if uploaded_file:
@@ -147,7 +146,7 @@ def simple_random_sampling(request):
             data_type = data.get("data")
 
             if data_type == "api":
-                Yi = get_YI_data_simplerandom()
+                Yi = get_YI_data_new()
                 
             elif data_type == "upload":
                 uploaded_file = request.FILES.get('file')
@@ -350,149 +349,6 @@ def stratified_sampling(request):
     return JsonResponse({"error": "Invalid request method."})
 
 
-# from django.core.files.storage import default_storage
 
 
-# @csrf_exempt
-# @api_view(["POST"])
-# def dowell_search(request):
-#     if request.method == "POST":
-#         payload = request.data
-#         print("payload", payload)
-#         data_type = payload.get("data_type")
-#         if data_type == "api":
-#             search_count = int(payload.get("search_count", 0))
-#             search_criteria = []
-#             manual_data = None
-#             user_field = payload.get("user_field", {})
 
-#             for i in range(search_count):
-#                 key = payload.get(f"key{i}", "")
-#                 value = payload.get(f"value{i}", "")
-#                 search_criteria.append((key, value))
-
-#             sample_values = dowell_purposive_sampling(
-#                 search_criteria, user_field, manual_data
-#             )
-#             return Response(sample_values)
-#         elif data_type == "upload":
-#             print("upload data")
-#             search_count = int(payload.get("search_count", 0))
-#             uploaded_data = request.FILES.get("_file")
-#             user_field = {
-#                 "cluster": "license",
-#                 "database": "license",
-#                 "collection": "licenses",
-#                 "document": "licenses",
-#                 "team_member_ID": "689044433",
-#                 "function_ID": "ABCDE",
-#                 "command": "fetch",
-#                 "field": {},
-#                 "update_field": None,
-#                 "platform": "bangalore",
-#             }
-#             search_criteria = []
-#             manual_data = None
-
-#             for i in range(search_count):
-#                 key = payload.get(f"key{i}", "")
-#                 value = payload.get(f"value{i}", "")
-#                 search_criteria.append((key, value))
-
-#             if uploaded_data:
-#                 print("uploaded_data", uploaded_data)
-#                 file_path = default_storage.save(
-#                     uploaded_data.name, uploaded_data
-#                 )  # Save the uploaded file
-#                 try:
-#                     with default_storage.open(file_path, "r") as file:
-#                         json_data = json.load(file)
-#                         manual_data = json_data
-#                         sample_values = dowell_purposive_sampling(
-#                             search_criteria, user_field, manual_data
-#                         )
-#                         return Response(sample_values)
-#                 finally:
-#                     os.remove(file_path)
-#         else:
-#             return Response({"error": "Invalid data type select api or upload"})
-#     else:
-#         return Response({"error": "Invalid request method."})
-
-
-# @csrf_exempt
-# def search(request):
-#     return render(request, "search_function.html")
-
-
-def sampling_input(request):
-    return render(request, "sampling_inputs.html")
-
-
-# def stratified_sampling_input(request):
-#     return render(request, "stratified_sampling_input.html")
-
-
-# def systematic_sampling_input(request):
-#     return render(request, "systematic_sampling_input.html")
-
-
-# def simple_random_sampling_input(request):
-#     return render(request, "simple_random_sampling_input.html")
-
-
-# def cluster_sampling_input(request):
-#     return render(request, "cluster_sampling_input.html")
-
-
-# def purposive_sampling_input(request):
-#     return render(request, "purposive_sampling_input.html")
-
-
-"""
-Types of sampling
-1. Stratified Random Sampling
-Request
-{
-
-}
-
-Response
-{
-
-}
-
-2. Systematic Sampling
-Request
-{
-
-}
-
-Response
-{
-
-}
-
-3. Purposive Sampling
-Request
-{
-
-}
-
-Response
-{
-
-}
-
-4. Cluster
-Request
-{
-
-}
-
-Response
-{
-
-}
-
-"""
