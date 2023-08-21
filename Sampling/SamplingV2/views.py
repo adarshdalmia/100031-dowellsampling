@@ -13,6 +13,11 @@ from API.functions.systematic_sampling import dowellSystematicSampling
 from API.functions.simpleRandomSampling import dowellSimpleRandomSampling
 from API.functions.clusterSampling import dowellClusterSampling
 from API.functions.purposiveSampling import dowellPurposiveSampling
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from API.functions.searchFunction import dowell_purposive_sampling
+import json
+import requests
 
 
 @csrf_exempt
@@ -78,11 +83,12 @@ def get_YI_data_simplerandom():
 
 @csrf_exempt
 def systematic_sampling(request, api_key):
-    validate_api_count = processApikey(api_key)
-    data_count = json.loads(validate_api_count)
-    if data_count['success']:
-        if data_count['total_credits'] >= 0:
-            if request.method == "POST":
+    if request.method == "POST":
+        validate_api_count = processApikey(api_key)
+        data_count = json.loads(validate_api_count)
+        if data_count['success']:
+            if data_count['total_credits'] >= 0:
+
                 json_data = request.POST.get('json_data')  # Retrieve the JSON data as a string
                 print("json_data", json_data)
                 try:
@@ -129,27 +135,31 @@ def systematic_sampling(request, api_key):
 
                 except Exception as e:
                     return JsonResponse({"error": str(e)})
-            return JsonResponse({"error": "Invalid request method."})
+
+            else:
+                return JsonResponse({
+                        "success": False,
+                        "message": data_count['message'],
+                        "credits": data_count['total_credits']
+                    })
         else:
             return JsonResponse({
-                "success": False,
-                "message": data_count['message'],
-                "credits": data_count['total_credits']
-            })
-    else:
-        return JsonResponse({
-            "success": False,
-            "message": data_count['message']
-        })
+                    "success": False,
+                    "message": data_count['message']
+                })
+
+    return JsonResponse({"error": "Invalid request method."})
 
 
 @csrf_exempt
 def simple_random_sampling(request, api_key):
-    validate_api_count = processApikey(api_key)
-    data_count = json.loads(validate_api_count)
-    if data_count['success']:
-        if data_count['total_credits'] >= 0:
-            if request.method == "POST":
+    if request.method == "POST":
+
+        validate_api_count = processApikey(api_key)
+        data_count = json.loads(validate_api_count)
+        if data_count['success']:
+            if data_count['total_credits'] >= 0:
+
                 json_data = request.POST.get('json_data')
                 try:
                     data = json.loads(json_data)
@@ -202,31 +212,36 @@ def simple_random_sampling(request, api_key):
 
                 except Exception as e:
                     return JsonResponse({"error": str(e)})
-            return JsonResponse({"error": "Invalid request method."})
+
+            else:
+                return JsonResponse({
+                        "success": False,
+                        "message": data_count['message'],
+                        "credits": data_count['total_credits']
+                    })
+
         else:
             return JsonResponse({
-                "success": False,
-                "message": data_count['message'],
-                "credits": data_count['total_credits']
-            })
-    else:
-        return JsonResponse({
-            "success": False,
-            "message": data_count['message']
-        })
+                    "success": False,
+                    "message": data_count['message']
+                })
+
+    return JsonResponse({"error": "Invalid request method."})
 
 
 @csrf_exempt
 def purposive_sampling(request, api_key):
-    validate_api_count = processApikey(api_key)
-    data_count = json.loads(validate_api_count)
-    if data_count['success']:
-        if data_count['total_credits'] >= 0:
-            if request.method == "POST":
+    if request.method == "POST":
+
+        validate_api_count = processApikey(api_key)
+        data_count = json.loads(validate_api_count)
+        if data_count['success']:
+            if data_count['total_credits'] >= 0:
+
                 try:
                     json_data = request.POST.get('json_data')
+                    print("json_data", json_data)
                     data = json.loads(json_data)
-                    # data = json.loads(request.body)
                     print(data)
                     inserted_id = data.get("insertedId")
                     unit = data.get("unit")
@@ -264,15 +279,9 @@ def purposive_sampling(request, api_key):
                         "N": int(N),
                     }
 
-                    # print(f"purposiveSamplingInput : {purposiveSamplingInput}")
-
                     samples = dowellPurposiveSampling(purposiveSamplingInput)
-                    print(f"samples : {samples}")
                     id = get_event_id()  # Make sure you have a function for this
-                    response = {"event_id": id["event_id"], "samples": samples}
-                    # response = {"event_id": id["event_id"], "samples": samples["sampleUnits"]}
-
-                    # response = {}
+                    response = {"event_id": id["event_id"], "samples": samples["sampleUnits"]}
 
                     if result == "Table":
                         return render(request, "result.html", {"response": response})
@@ -280,32 +289,34 @@ def purposive_sampling(request, api_key):
 
                 except Exception as e:
                     return JsonResponse({"error": str(e)})
-            return JsonResponse({"error": "Invalid request method."})
+
+            else:
+                return JsonResponse({
+                        "success": False,
+                        "message": data_count['message'],
+                        "credits": data_count['total_credits']
+                    })
         else:
             return JsonResponse({
-                "success": False,
-                "message": data_count['message'],
-                "credits": data_count['total_credits']
-            })
-    else:
-        return JsonResponse({
-            "success": False,
-            "message": data_count['message']
-        })
+                    "success": False,
+                    "message": data_count['message']
+                })
+
+    return JsonResponse({"error": "Invalid request method."})
 
 
 @csrf_exempt
 def cluster_sampling(request, api_key):
-    validate_api_count = processApikey(api_key)
-    data_count = json.loads(validate_api_count)
-    if data_count['success']:
-        if data_count['total_credits'] >= 0:
-            if request.method == "POST":
+    if request.method == "POST":
+
+        validate_api_count = processApikey(api_key)
+        data_count = json.loads(validate_api_count)
+        if data_count['success']:
+            if data_count['total_credits'] >= 0:
+
                 try:
                     json_data = request.POST.get('json_data')
                     data = json.loads(json_data)
-
-                    # data = json.loads(request.body)
 
                     inserted_id = data.get("insertedId")
                     numberOfClusters = data.get("numberOfClusters")
@@ -337,12 +348,8 @@ def cluster_sampling(request, api_key):
                     }
 
                     samples = dowellClusterSampling(clusterSamplingInput)
-
-                    print(f"samples : {samples}")
-
                     id = get_event_id()  # Make sure you have a function for this
-                    # response = {"event_id": id["event_id"], "samples": samples["sampleUnits"]}
-                    response = {"event_id": id["event_id"], "samples": samples}
+                    response = {"event_id": id["event_id"], "samples": samples["sampleUnits"]}
 
                     if result == "Table":
                         return render(request, "result.html", {"response": response})
@@ -350,27 +357,33 @@ def cluster_sampling(request, api_key):
 
                 except Exception as e:
                     return JsonResponse({"error": str(e)})
-            return JsonResponse({"error": "Invalid request method."})
-        else:
-            return JsonResponse({
+
+
+            else:
+                return JsonResponse({
                 "success": False,
                 "message": data_count['message'],
                 "credits": data_count['total_credits']
             })
-    else:
-        return JsonResponse({
+
+        else:
+            return JsonResponse({
             "success": False,
             "message": data_count['message']
         })
 
+    return JsonResponse({"error": "Invalid request method."})
+
 
 @csrf_exempt
 def stratified_sampling(request, api_key):
-    validate_api_count = processApikey(api_key)
-    data_count = json.loads(validate_api_count)
-    if data_count['success']:
-        if data_count['total_credits'] >= 0:
-            if request.method == "POST":
+    if request.method == "POST":
+
+        validate_api_count = processApikey(api_key)
+        data_count = json.loads(validate_api_count)
+        if data_count['success']:
+            if data_count['total_credits'] >= 0:
+
                 try:
                     json_data = request.POST.get('json_data')
                     data = json.loads(json_data)
@@ -415,18 +428,20 @@ def stratified_sampling(request, api_key):
 
                 except Exception as e:
                     return JsonResponse({"error": str(e)})
-            return JsonResponse({"error": "Invalid request method."})
+
+            else:
+                return JsonResponse({
+                    "success": False,
+                    "message": data_count['message'],
+                    "credits": data_count['total_credits']
+                })
         else:
             return JsonResponse({
                 "success": False,
-                "message": data_count['message'],
-                "credits": data_count['total_credits']
+                "message": data_count['message']
             })
-    else:
-        return JsonResponse({
-            "success": False,
-            "message": data_count['message']
-        })
+
+    return JsonResponse({"error": "Invalid request method."})
 
 
 # from django.core.files.storage import default_storage
@@ -504,23 +519,8 @@ def stratified_sampling(request, api_key):
 #     return render(request, "search_function.html")
 
 
-def sampling_input(request, api_key):
-    validate_api_count = processApikey(api_key)
-    data_count = json.loads(validate_api_count)
-    if data_count['success']:
-        if data_count['total_credits'] >= 0:
-            return render(request, "sampling_inputs.html")
-        else:
-            return JsonResponse({
-                "success": False,
-                "message": data_count['message'],
-                "credits": data_count['total_credits']
-            })
-    else:
-        return JsonResponse({
-            "success": False,
-            "message": data_count['message']
-        })
+def sampling_input(request):
+    return render(request, "sampling_inputs.html")
 
 
 # def stratified_sampling_input(request):
