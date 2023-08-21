@@ -6,6 +6,7 @@ from django.views.decorators.http import require_POST
 from django.views.decorators.csrf import csrf_exempt
 from API.functions.API_Key_System import processApikey
 
+
 def calculate_sample_size(data):
     try:
         population_size = data.get('population_size')
@@ -38,7 +39,7 @@ def calculate_sample_size(data):
 def calculate_sample_size_with_known_sd(population_size, error, confidence_level, standard_deviation):
     process_time = 0
     z = get_z_score(confidence_level)
-    p = 0.5 
+    p = standard_deviation 
     q = 1 - p
     numerator = (z ** 2) * p * q
     denominator = (error ** 2) * (1 + (((z ** 2) * p * q) / (error ** 2 * population_size)))
@@ -61,7 +62,7 @@ def calculate_sample_size_using_slovin(population_size, error):
 def calculate_sample_size_without_pop_size(error, confidence_level, standard_deviation):
     process_time = 0
     z = get_z_score(confidence_level)
-    p = 0.5 
+    p = standard_deviation
     sample_size = (z ** 2 * p * (1 - p)) / (error ** 2)
     process_time = time.process_time()
     method_used = 'infinite_population'
@@ -89,7 +90,7 @@ def sample_size(request):
 def sample_size_api(request, api_key):
     if (request.method=="POST"):
         data=json.loads(request.body)
-        validate_api_count = processApikey(api_key, "DOWELL10032")
+        validate_api_count = processApikey(api_key, "DOWELL100011")
         data_count = json.loads(validate_api_count)
         if data_count['success'] :
             if data_count['count'] >= 0:
