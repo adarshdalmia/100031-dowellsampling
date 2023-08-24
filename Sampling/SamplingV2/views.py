@@ -5,7 +5,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse, HttpResponse
 import json
 import requests
-
+from API.functions.quotaSampling import dowellQuotaSampling
 from API.functions.API_Key_System import processApikey
 from API.functions.stratifiedSampling import dowellStratifiedSampling
 from API.functions.sampleSize import dowellSampleSize
@@ -17,7 +17,6 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from API.functions.searchFunction import dowell_purposive_sampling
 import json
-import requests
 
 
 @csrf_exempt
@@ -444,149 +443,49 @@ def stratified_sampling(request, api_key):
     return JsonResponse({"error": "Invalid request method."})
 
 
-# from django.core.files.storage import default_storage
-
-
-# @csrf_exempt
-# @api_view(["POST"])
-# def dowell_search(request):
-#     if request.method == "POST":
-#         payload = request.data
-#         print("payload", payload)
-#         data_type = payload.get("data_type")
-#         if data_type == "api":
-#             search_count = int(payload.get("search_count", 0))
-#             search_criteria = []
-#             manual_data = None
-#             user_field = payload.get("user_field", {})
-
-#             for i in range(search_count):
-#                 key = payload.get(f"key{i}", "")
-#                 value = payload.get(f"value{i}", "")
-#                 search_criteria.append((key, value))
-
-#             sample_values = dowell_purposive_sampling(
-#                 search_criteria, user_field, manual_data
-#             )
-#             return Response(sample_values)
-#         elif data_type == "upload":
-#             print("upload data")
-#             search_count = int(payload.get("search_count", 0))
-#             uploaded_data = request.FILES.get("_file")
-#             user_field = {
-#                 "cluster": "license",
-#                 "database": "license",
-#                 "collection": "licenses",
-#                 "document": "licenses",
-#                 "team_member_ID": "689044433",
-#                 "function_ID": "ABCDE",
-#                 "command": "fetch",
-#                 "field": {},
-#                 "update_field": None,
-#                 "platform": "bangalore",
-#             }
-#             search_criteria = []
-#             manual_data = None
-
-#             for i in range(search_count):
-#                 key = payload.get(f"key{i}", "")
-#                 value = payload.get(f"value{i}", "")
-#                 search_criteria.append((key, value))
-
-#             if uploaded_data:
-#                 print("uploaded_data", uploaded_data)
-#                 file_path = default_storage.save(
-#                     uploaded_data.name, uploaded_data
-#                 )  # Save the uploaded file
-#                 try:
-#                     with default_storage.open(file_path, "r") as file:
-#                         json_data = json.load(file)
-#                         manual_data = json_data
-#                         sample_values = dowell_purposive_sampling(
-#                             search_criteria, user_field, manual_data
-#                         )
-#                         return Response(sample_values)
-#                 finally:
-#                     os.remove(file_path)
-#         else:
-#             return Response({"error": "Invalid data type select api or upload"})
-#     else:
-#         return Response({"error": "Invalid request method."})
-
-
-# @csrf_exempt
-# def search(request):
-#     return render(request, "search_function.html")
-
-
 def sampling_input(request):
     return render(request, "sampling_inputs.html")
 
+@csrf_exempt
+def quota_sampling(request):
+    if request.method == "POST":
+        try:
+            json_data = request.POST.get('json_data')
+            data = json.loads(json_data)
 
-# def stratified_sampling_input(request):
-#     return render(request, "stratified_sampling_input.html")
+            inserted_id = data.get("insertedId")
+            allocation_type = data.get("allocationType")
+            population_size = data.get("populationSize")
+            result = data.get("result")
 
+            if data["data"] == "api":
+                Yi = get_YI_data()  # Make sure you have a function for this
+            elif data["data"] == "upload":
+                uploaded_file = request.FILES.get("file")
+                if uploaded_file:
+                    df = pd.read_excel(uploaded_file)
+                    list_of_lists = df.values.T.tolist()
+                    Yi = list_of_lists
+                else:
+                    return JsonResponse({"error": "No file uploaded."})
+            else:
+                return JsonResponse({"error": "Invalid data option."})
 
-# def systematic_sampling_input(request):
-#     return render(request, "systematic_sampling_input.html")
+            quotaSamplingInput = {
+                "population_units": Yi,
+                "population_size": population_size,
+                "unit": allocation_type,
+            }
 
+            samples, process_time = dowellQuotaSampling(**quotaSamplingInput)
+            id = get_event_id()  # Make sure you have a function for this
+            response = {"event_id": id["event_id"], "samples": samples}
 
-# def simple_random_sampling_input(request):
-#     return render(request, "simple_random_sampling_input.html")
+            if result == "Table":
+                return render(request, "result.html", {"response": response})
+            return JsonResponse(response, safe=False)
 
+        except Exception as e:
+            return JsonResponse({"error": str(e)})
 
-# def cluster_sampling_input(request):
-#     return render(request, "cluster_sampling_input.html")
-
-
-# def purposive_sampling_input(request):
-#     return render(request, "purposive_sampling_input.html")
-
-
-"""
-Types of sampling
-1. Stratified Random Sampling
-Request
-{
-
-}
-
-Response
-{
-
-}
-
-2. Systematic Sampling
-Request
-{
-
-}
-
-Response
-{
-
-}
-
-3. Purposive Sampling
-Request
-{
-
-}
-
-Response
-{
-
-}
-
-4. Cluster
-Request
-{
-
-}
-
-Response
-{
-
-}
-
-"""
+    return JsonResponse({"error": "Invalid request method."})
