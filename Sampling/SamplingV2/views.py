@@ -448,45 +448,60 @@ def sampling_input(request):
 
 
 @csrf_exempt
-def quota_sampling(request):
+def quota_sampling(request, api_key):
     if request.method == "POST":
-        try:
-            json_data = request.POST.get('json_data')
-            data = json.loads(json_data)
+        validate_api_count = processApikey(api_key)
+        data_count = json.loads(validate_api_count)
+        if data_count['success']:
+            if data_count['total_credits'] >= 0:
+                try:
+                    json_data = request.POST.get('json_data')
+                    data = json.loads(json_data)
 
-            inserted_id = data.get("insertedId")
-            allocation_type = data.get("allocationType")
-            population_size = data.get("populationSize")
-            result = data.get("result")
+                    inserted_id = data.get("insertedId")
+                    allocation_type = data.get("allocationType")
+                    population_size = data.get("populationSize")
+                    result = data.get("result")
 
-            if data["data"] == "api":
-                Yi = get_YI_data()  # Make sure you have a function for this
-            elif data["data"] == "upload":
-                uploaded_file = request.FILES.get("file")
-                if uploaded_file:
-                    df = pd.read_excel(uploaded_file)
-                    list_of_lists = df.values.T.tolist()
-                    Yi = list_of_lists
-                else:
-                    return JsonResponse({"error": "No file uploaded."})
+                    if data["data"] == "api":
+                        Yi = get_YI_data()  # Make sure you have a function for this
+                    elif data["data"] == "upload":
+                        uploaded_file = request.FILES.get("file")
+                        if uploaded_file:
+                            df = pd.read_excel(uploaded_file)
+                            list_of_lists = df.values.T.tolist()
+                            Yi = list_of_lists
+                        else:
+                            return JsonResponse({"error": "No file uploaded."})
+                    else:
+                        return JsonResponse({"error": "Invalid data option."})
+
+                    quotaSamplingInput = {
+                        "population_units": Yi,
+                        "population_size": population_size,
+                        "unit": allocation_type,
+                    }
+
+                    samples, process_time = dowellQuotaSampling(**quotaSamplingInput)
+                    id = get_event_id()  # Make sure you have a function for this
+                    response = {"event_id": id["event_id"], "samples": samples}
+
+                    if result == "Table":
+                        return render(request, "result.html", {"response": response})
+                    return JsonResponse(response, safe=False)
+
+                except Exception as e:
+                    return JsonResponse({"error": str(e)})
             else:
-                return JsonResponse({"error": "Invalid data option."})
-
-            quotaSamplingInput = {
-                "population_units": Yi,
-                "population_size": population_size,
-                "unit": allocation_type,
-            }
-
-            samples, process_time = dowellQuotaSampling(**quotaSamplingInput)
-            id = get_event_id()  # Make sure you have a function for this
-            response = {"event_id": id["event_id"], "samples": samples}
-
-            if result == "Table":
-                return render(request, "result.html", {"response": response})
-            return JsonResponse(response, safe=False)
-
-        except Exception as e:
-            return JsonResponse({"error": str(e)})
+                return JsonResponse({
+                        "success": False,
+                        "message": data_count['message'],
+                        "credits": data_count['total_credits']
+                    })
+        else:
+            return JsonResponse({
+                    "success": False,
+                    "message": data_count['message']
+                })
 
     return JsonResponse({"error": "Invalid request method."})
