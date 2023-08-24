@@ -5,6 +5,7 @@ from django.http import JsonResponse, HttpResponse
 from django.views.decorators.http import require_POST
 from django.views.decorators.csrf import csrf_exempt
 from API.functions.API_Key_System import processApikey
+import random
 
 
 def calculate_sample_size(data):
@@ -29,6 +30,8 @@ def calculate_sample_size(data):
                 standard_deviation = float(standard_deviation)
                 sample_size, process_time, method_used = calculate_sample_size_without_pop_size(error, confidence_level, standard_deviation)
             else:
+                population_size = random.randint(100000,1000000)
+                print(population_size)
                 sample_size, process_time, method_used = calculate_sample_size_using_slovin(population_size, error)
 
         return JsonResponse({'sample_size': sample_size, 'process_time': process_time, 'method_used': method_used, 'success':True})
