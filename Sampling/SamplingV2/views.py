@@ -446,6 +446,7 @@ def stratified_sampling(request, api_key):
 def sampling_input(request):
     return render(request, "sampling_inputs.html")
 
+
 @csrf_exempt
 def quota_sampling(request):
     if request.method == "POST":
@@ -471,8 +472,6 @@ def quota_sampling(request):
             else:
                 return JsonResponse({"error": "Invalid data option."})
 
-<<<<<<< HEAD
-=======
             quotaSamplingInput = {
                 "population_units": Yi,
                 "population_size": population_size,
@@ -491,4 +490,3 @@ def quota_sampling(request):
             return JsonResponse({"error": str(e)})
 
     return JsonResponse({"error": "Invalid request method."})
->>>>>>> backend
