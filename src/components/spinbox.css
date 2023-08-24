@@ -1,0 +1,35 @@
+.spinbox {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 120px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 8px;
+}
+
+.spinbox button {
+    background-color: #f0f0f0;
+    border: none;
+    padding: 4px 8px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.spinbox button:hover {
+    background-color: #e0e0e0;
+}
+
+.spinbox button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.spinbox span {
+    font-size: 18px;
+}
+.row
+{
+    display: grid;
+    justify-content: space-between;
+}
