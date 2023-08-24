@@ -5,7 +5,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse, HttpResponse
 import json
 import requests
-
+from API.functions.quotaSampling import dowellQuotaSampling
 from API.functions.API_Key_System import processApikey
 from API.functions.stratifiedSampling import dowellStratifiedSampling
 from API.functions.sampleSize import dowellSampleSize
@@ -17,7 +17,6 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from API.functions.searchFunction import dowell_purposive_sampling
 import json
-import requests
 
 
 @csrf_exempt
@@ -447,4 +446,49 @@ def stratified_sampling(request, api_key):
 def sampling_input(request):
     return render(request, "sampling_inputs.html")
 
+@csrf_exempt
+def quota_sampling(request):
+    if request.method == "POST":
+        try:
+            json_data = request.POST.get('json_data')
+            data = json.loads(json_data)
 
+            inserted_id = data.get("insertedId")
+            allocation_type = data.get("allocationType")
+            population_size = data.get("populationSize")
+            result = data.get("result")
+
+            if data["data"] == "api":
+                Yi = get_YI_data()  # Make sure you have a function for this
+            elif data["data"] == "upload":
+                uploaded_file = request.FILES.get("file")
+                if uploaded_file:
+                    df = pd.read_excel(uploaded_file)
+                    list_of_lists = df.values.T.tolist()
+                    Yi = list_of_lists
+                else:
+                    return JsonResponse({"error": "No file uploaded."})
+            else:
+                return JsonResponse({"error": "Invalid data option."})
+
+<<<<<<< HEAD
+=======
+            quotaSamplingInput = {
+                "population_units": Yi,
+                "population_size": population_size,
+                "unit": allocation_type,
+            }
+
+            samples, process_time = dowellQuotaSampling(**quotaSamplingInput)
+            id = get_event_id()  # Make sure you have a function for this
+            response = {"event_id": id["event_id"], "samples": samples}
+
+            if result == "Table":
+                return render(request, "result.html", {"response": response})
+            return JsonResponse(response, safe=False)
+
+        except Exception as e:
+            return JsonResponse({"error": str(e)})
+
+    return JsonResponse({"error": "Invalid request method."})
+>>>>>>> backend
