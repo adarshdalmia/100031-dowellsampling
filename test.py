@@ -1,40 +1,45 @@
 import random
+import time
 
+# Function to generate random numbers for i and j
+def dowell_random_generation(N, M):
+    i = random.randint(1, N)
+    j = random.randint(1, M)
+    return i, j
 
-def dowell_pps_sampling(population_units, population_size, sample_size, size):
-  """
-  Performs PPS sampling on a population of units.
+# Function to calculate Dowell sample size
+def dowell_sample_size(N):
+    return int(0.05 * N)  # You can adjust the sampling rate as needed
 
-  Args:
-    population_units: A list of the population units.
-    population_size: The size of the population.
-    sample_size: The desired sample size.
-    size: The size of each population unit.
+# Function to perform PPS sampling using Lahiri method
+def pps_sampling_lahiri(Population_units, Population_size, sample_size, size):
+    # Initialize the selected units list and process start time
+    selected_units = []
+    start_time = time.time()
 
-  Returns:
-    A list of the sampled units.
-  """
+    while len(selected_units) < sample_size:
+        i, j = dowell_random_generation(Population_size, size)
 
-  # Check if the population units vary considerably in size.
-  if len(set(size)) == 1:
-    print("Population units do not vary considerably in size.")
-    return []
+        if 1 <= i <= Population_size and 1 <= j <= size:
+            Si = Population_units[j - 1]  # Assuming index is 0-based
+            if j <= Si:
+                selected_units.append(i)
+        else:
+            print("Selected random numbers are not appropriate")
 
-  # Use Lahiri method to draw sample.
-  selected_units = []
-  for _ in range(sample_size):
-    i = random.randint(1, population_size)
-    j = random.randint(1, max(size))
-    if j <= size[i - 1]:
-      selected_units.append(population_units[i - 1])
+    # Calculate process time
+    process_time = time.time() - start_time
 
-  return selected_units
+    return selected_units, process_time
 
-population_units = ["A", "B", "C", "D", "E"]
-population_size = 5
-sample_size = 3
-size = [1, 2, 3, 4, 5]
+# Example values
+Population_units = [5, 3, 7, 2, 6, 4, 8, 1]  # Replace with your population units
+Population_size = len(Population_units)
+sample_size = dowell_sample_size(Population_size)
+size = max(Population_units)
 
-selected_units = dowell_pps_sampling(population_units, population_size, sample_size, size)
+# Call the PPS sampling function
+sample_units, process_time = pps_sampling_lahiri(Population_units, Population_size, sample_size, size)
 
-print(selected_units)
+print("Selected sample units:", sample_units)
+print("Process time:", process_time, "seconds")

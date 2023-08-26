@@ -27,8 +27,10 @@ def dowellppsSampling(ppsSamplingInputs):
     for _ in range(sample_size):
         i = random.randint(1, population_size)
         j = random.randint(1, max(size))
-        if j <= size[i - 1]:
+        if 1 <= i <= population_size and 1 <= j <= max(size):
             selected_units.append(population_units[i - 1])
+        else:
+            print("Selected random numbers are not appropriate")
     print(selected_units,"sele")
     process_time = 0.5
     return selected_units ,process_time
