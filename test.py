@@ -1,51 +1,40 @@
 import random
 
-# Hardcoded population data
-population = ['Item 1', 'Item 2', 'Item 3', 'Item 4', 'Item 5', 'Item 6', 'Item 7', 'Item 8', 'Item 9', 'Item 10']
 
-# Simple Random Sampling
-def simple_random_sampling(sample_size):
-    return random.sample(population, sample_size)
+def dowell_pps_sampling(population_units, population_size, sample_size, size):
+  """
+  Performs PPS sampling on a population of units.
 
-# Systematic Sampling
-def systematic_sampling(sample_size, start_index):
-    sampled_items = []
-    for i in range(start_index - 1, len(population), sample_size):
-        sampled_items.append(population[i])
-    return sampled_items
+  Args:
+    population_units: A list of the population units.
+    population_size: The size of the population.
+    sample_size: The desired sample size.
+    size: The size of each population unit.
 
-# Purposive Sampling
-def purposive_sampling(selected_items):
-    return selected_items
+  Returns:
+    A list of the sampled units.
+  """
 
-# Cluster Sampling
-# def cluster_sampling(selected_clusters, sample_size_per_cluster):
-#     sampled_items = []
-#     for cluster in selected_clusters:
-#         sampled_items.extend(random.sample(cluster, sample_size_per_cluster))
-#     return sampled_items
+  # Check if the population units vary considerably in size.
+  if len(set(size)) == 1:
+    print("Population units do not vary considerably in size.")
+    return []
 
-# Stratified Sampling
-def stratified_sampling(strata, sample_size_per_stratum):
-    sampled_items = []
-    for stratum in strata:
-        sampled_items.extend(random.sample(stratum['items'], sample_size_per_stratum))
-    return sampled_items
+  # Use Lahiri method to draw sample.
+  selected_units = []
+  for _ in range(sample_size):
+    i = random.randint(1, population_size)
+    j = random.randint(1, max(size))
+    if j <= size[i - 1]:
+      selected_units.append(population_units[i - 1])
 
-# Sample input for each method
+  return selected_units
+
+population_units = ["A", "B", "C", "D", "E"]
+population_size = 5
 sample_size = 3
-start_index = 2
-selected_items = ['Item 1', 'Item 3', 'Item 5']
-selected_clusters = [['Item 1', 'Item 2', 'Item 3'], ['Item 6', 'Item 7', 'Item 8'], ['Item 9', 'Item 10']]
-strata = [
-    {'age_group': '18-25', 'items': ['Item 1', 'Item 4']},
-    {'age_group': '26-30', 'items': ['Item 2', 'Item 5', 'Item 8']},
-    {'age_group': '31-35', 'items': ['Item 3', 'Item 6', 'Item 9']}
-]
+size = [1, 2, 3, 4, 5]
 
-# Call the functions with the sample input
-print("Simple Random Sampling:", simple_random_sampling(sample_size))
-print("Systematic Sampling:", systematic_sampling(sample_size, start_index))
-print("Purposive Sampling:", purposive_sampling(selected_items))
-# print("Cluster Sampling:", cluster_sampling(selected_clusters, sample_size))
-print("Stratified Sampling:", stratified_sampling(strata, sample_size))
+selected_units = dowell_pps_sampling(population_units, population_size, sample_size, size)
+
+print(selected_units)

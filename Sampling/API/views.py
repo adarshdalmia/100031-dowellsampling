@@ -17,7 +17,7 @@ from .functions.searchFunction import dowell_purposive_sampling
 import json
 import requests
 from API.functions.quotaSampling import dowellQuotaSampling
-
+from API.functions.ppsSampling import dowellppsSampling
 @csrf_exempt
 def get_event_id():
     url = "https://uxlivinglab.pythonanywhere.com/create_event"
@@ -120,8 +120,7 @@ def systematic_sampling(request):
             samples = dowellSystematicSampling(systematicSamplingInput)
             response = {"samples": samples}
 
-            if result == "Table":
-                return render(request, "result.html", {"response": response})
+
             return JsonResponse(response, safe=False)
 
         except Exception as e:
@@ -179,8 +178,7 @@ def simple_random_sampling(request):
             samples = dowellSimpleRandomSampling(simpleRandomSamplingInput)
             response = {"samples": samples["sampleUnits"]}
 
-            if result == "Table":
-                return render(request, "result.html", {"response": response})
+
             return JsonResponse(response, safe=False)
 
         except Exception as e:
@@ -237,8 +235,6 @@ def purposive_sampling(request):
             id = get_event_id()  # Make sure you have a function for this
             response = {"event_id": id["event_id"], "samples": samples["sampleUnits"]}
 
-            if result == "Table":
-                return render(request, "result.html", {"response": response})
             return JsonResponse(response, safe=False)
 
         except Exception as e:
@@ -287,8 +283,6 @@ def cluster_sampling(request):
             id = get_event_id()  # Make sure you have a function for this
             response = {"event_id": id["event_id"], "samples": samples["sampleUnits"]}
 
-            if result == "Table":
-                return render(request, "result.html", {"response": response})
             return JsonResponse(response, safe=False)
 
         except Exception as e:
@@ -310,7 +304,6 @@ def stratified_sampling(request):
             sampling_type = data.get("samplingType")
             replacement = data.get("replacement")
             populationSize = data.get("populationSize")
-            result = data.get("result")
 
             if data["data"] == "api":
                 Yi = get_YI_data()  # Make sure you have a function for this
@@ -339,8 +332,6 @@ def stratified_sampling(request):
             id = get_event_id()  # Make sure you have a function for this
             response = {"event_id": id["event_id"], "samples": samples["sampleUnits"]}
 
-            if result == "Table":
-                return render(request, "result.html", {"response": response})
             return JsonResponse(response, safe=False)
 
         except Exception as e:
@@ -361,7 +352,7 @@ def quota_sampling(request):
             inserted_id = data.get("insertedId")
             allocation_type = data.get("allocationType")
             population_size = data.get("populationSize")
-            result = data.get("result")
+            
 
             if data["data"] == "api":
                 Yi = get_YI_data()  # Make sure you have a function for this
@@ -383,14 +374,62 @@ def quota_sampling(request):
             }
 
             samples, process_time = dowellQuotaSampling(**quotaSamplingInput)
-            id = get_event_id()  # Make sure you have a function for this
+            id = get_event_id() 
             response = {"event_id": id["event_id"], "samples": samples}
 
-            if result == "Table":
-                return render(request, "result.html", {"response": response})
             return JsonResponse(response, safe=False)
 
         except Exception as e:
             return JsonResponse({"error": str(e)})
 
     return JsonResponse({"error": "Invalid request method."})
+
+
+
+@csrf_exempt
+def pps_sampling(request):
+    if request.method == "POST":
+        try:
+            json_data = request.POST.get('json_data')
+            data = json.loads(json_data)
+            print("data",data)
+            inserted_id = data.get("insertedId")
+            population_size = data.get("population_size")
+            size = data.get("size")
+            
+
+
+            if data["data"] == "api":
+                Yi = get_YI_data_new()  
+            elif data["data"] == "upload":
+                uploaded_file = request.FILES.get("file")
+                if uploaded_file:
+                    df = pd.read_excel(uploaded_file)
+                    list_of_lists = df.values.T.tolist()
+                    Yi = list_of_lists
+                else:
+                    return JsonResponse({"error": "No file uploaded."})
+            else:
+                return JsonResponse({"error": "Invalid data option."})
+
+            ppsSamplingInputs = {
+                "population_units": Yi,
+                "population_size": population_size,
+                "size" :size
+            }
+            # print(ppsSamplingInputs)
+
+            samples, process_time = dowellppsSampling(ppsSamplingInputs)
+            print(samples)
+            # id = get_event_id()  # Make sure you have a function for this
+            response = { "samples": samples}
+            return JsonResponse ({ "samples": samples})
+
+
+        except Exception as e:
+            return JsonResponse({"error": str(e)})
+
+    return JsonResponse({"error": "Invalid request method."})
+
+
+

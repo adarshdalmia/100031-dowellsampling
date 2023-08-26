@@ -1,31 +1,35 @@
-from randomGeneration import dowellRandomGeneration
-from sampleSize import dowellSampleSize
+import random
+from API.functions.randomGeneration import dowellRandomGeneration
+from API.functions.sampleSize import dowellSampleSize
 import time
 import requests
 import json
 
 
-def pps_sampling(population_size, size, insertId):
-    Yi = populationUnits(insertId)
-    N = population_size
-    n = dowellSampleSize(N, margin_of_error=0.05)
-    Si = size
-    sample = 0
+def dowellppsSampling(ppsSamplingInputs):
+    
+    # population_units = ppsSamplingInputs['population_units']
+    population_units = ["A", "B", "C", "D", "E"]
+    population_size = ppsSamplingInputs['population_size']
+    sample_size = dowellSampleSize(population_size, e=0.05)
+    # size = [ppsSamplingInputs['size']]
+    size = [1, 2, 3, 4, 5]
 
-    if len(Yi) < 5:
-        return "Please try another sample method"
 
-    rand1, rand2 = dowellRandomGeneration(
-        N, n, Yi), dowellRandomGeneration(N, n, Yi)
+    # Check if the population units vary considerably in size.
+    if len(set(size)) == 1:
+        print("Population units do not vary considerably in size.")
+        return []
 
-    if not (1 <= rand1[0] <= N) and not (1 <= rand2[0] <= Si):
-        return "The selected random numbers are not appropriate"
+    # Use Lahiri method to draw sample. 
+    #random generation method retruning list which isnt comparable to int
+    selected_units = []
+    for _ in range(sample_size):
+        i = random.randint(1, population_size)
+        j = random.randint(1, max(size))
+        if j <= size[i - 1]:
+            selected_units.append(population_units[i - 1])
+    print(selected_units,"sele")
+    process_time = 0.5
+    return selected_units ,process_time
 
-    while sample != n:
-        if rand2[0] <= Si:
-            sample = Yi[rand1[0]]
-        else:
-            pass
-
-    process_time = time.process_time()
-    return sample, process_time

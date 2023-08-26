@@ -7,6 +7,8 @@ urlpatterns = [
     path('simple_random/', views.simple_random_sampling,name='simple_random_sampling'),
     path('cluster_sampling/', views.cluster_sampling,name='cluster_sampling'),
     path('purposive_sampling/', views.purposive_sampling,name='purposive_sampling'),
+    path('quota_sampling/',views.quota_sampling, name='quota_sampling'),
+    path('pps/',views.pps_sampling,name='pps'),
     
     
 ]

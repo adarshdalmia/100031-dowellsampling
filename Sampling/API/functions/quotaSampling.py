@@ -5,7 +5,7 @@ import time
 
 def dowellQuotaSampling(population_units, population_size, unit):
     process_time = 0
-    n = dowellSampleSize(population_units, margin_of_error=0.05)
+    n = dowellSampleSize(population_units, e=0.05)
     quotas = []
     sample_units = []
     purposive_input = {}
@@ -38,4 +38,4 @@ def dowellQuotaSampling(population_units, population_size, unit):
 
     process_time = time.process_time()
 
-    print(sample_units, process_time)
+    return(sample_units, process_time)

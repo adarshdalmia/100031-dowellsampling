@@ -34,24 +34,24 @@ def dowellPurposiveSampling(purposeiveSamplingInput):
     return sample_values
 
 
-Yi = [
-    "India",
-    "Delhi",
-    "Uttar Pradesh",
-    "Pune",
-    "Kolkata",
-    "Hamburg",
-    "Munich",
-]
+# Yi = [
+#     "India",
+#     "Delhi",
+#     "Uttar Pradesh",
+#     "Pune",
+#     "Kolkata",
+#     "Hamburg",
+#     "Munich",
+# ]
 
-unit = [
-    "India,Germany",
-    "Delhi,Hamburg",
-    "Uttar Pradesh,Georgia",
-    "Pune,Munich",
-    "Kolkata,Hamburg",
-    "Hamburg,Delhi",
-]
+# unit = [
+#     "India,Germany",
+#     "Delhi,Hamburg",
+#     "Uttar Pradesh,Georgia",
+#     "Pune,Munich",
+#     "Kolkata,Hamburg",
+#     "Hamburg,Delhi",
+# ]
 
 # sampled_values = dowellPurposiveSampling(Yi, unit)
 # print("Sampled Values:")

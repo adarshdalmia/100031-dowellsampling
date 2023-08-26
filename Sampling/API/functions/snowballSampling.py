@@ -1,47 +1,67 @@
-import time
+import random
 
 
-def dowellsnowballsampling(Yi, N, n, Ri):
-    sample_units = []
-    process_time = 0
-    print("Select the first unit to be included in the sample:")
-    unit_1 = input()
-    sample_units.append(unit_1)
-    print(f"Find a connection/reference from {unit_1} to select the second unit in the sample:")
-    R1 = input()
-    for i in range(2, n+1):
-        print(f"Select the {i}th unit to be included in the sample:")
-        unit_i = input()
+def snowball_sampling(population_units, population_size, sample_size, reference):
+  """
+  Performs snowball sampling.
 
-        valid_connection = False
-        while not valid_connection:
-            print(f"Find a connection/reference from {unit_i} (excluding {R1}) for the {i}th unit:")
-            Ri = input()
+  Args:
+    population_units: A list of population units.
+    population_size: The population size.
+    sample_size: The sample size.
+    reference: The reference connection.
 
-            if Ri == R1:
-                print("Select another connection. It should not be the same as the previous connection.")
-            else:
-                valid_connection = True
+  Returns:
+    A list of sample units.
+  """
 
-        sample_units.append(unit_i)
+  sample = []
+  connections = set()
 
-    # Calculate the process time
-    process_time = time.process_time()
+  # Create a connections attribute for each unit.
+  for unit in population_units:
+    unit["connections"] = []
 
-    return sample_units, process_time
+  # Select the first unit to be included in the sample.
+  unit = population_units[random.randint(0, population_size - 1)]
+  sample.append(unit)
+  connections.add(reference)
 
-def main():
-    Yi = input("Enter the population units: ")
-    N = int(input("Enter the population size: "))
-    n = int(input("Enter the sample size: "))
-    Ri = input("Enter the reference: ")
+  # Iterate until the sample size is reached.
+  while len(sample) < sample_size:
+    # Find a connection from the current unit.
+    connection = None
+    for unit_connection in unit["connections"]:
+      if unit_connection not in connections:
+        connection = unit_connection
+        break
 
-    sample_units, process_time = dowellsnowballsampling(Yi, N, n, Ri)
+    # If no connection was found, prompt the user to select another connection.
+    if connection is None:
+      print("Could not find a connection from the current unit.")
+      connection = int(input("Please select another connection: "))
 
-    print("\nSample units:",sample_units)
+    # Add the connection to the set of connections and the sample.
+    connections.add(connection)
+    sample.append(connection)
 
-    print(f"\nProcess time: {process_time} seconds")
+  return sample
 
 
-if __name__ == "__main__":
-    main()
+
+population_units = [
+    {"name": "John Doe", "connections": ["Jane Doe", "Peter Smith"]},
+    {"name": "Jane Doe", "connections": ["John Doe", "Susan Jones"]},
+    {"name": "Peter Smith", "connections": ["John Doe", "Mary Johnson"]},
+    {"name": "Susan Jones", "connections": ["Jane Doe", "David Williams"]},
+    {"name": "Mary Johnson", "connections": ["Peter Smith", "David Williams"]},
+    {"name": "David Williams", "connections": ["Mary Johnson", "Susan Jones"]},
+]
+population_size = len(population_units)
+sample_size = 2
+reference = "John Doe"
+
+sample = snowball_sampling(population_units, population_size, sample_size, reference)
+
+print("The sample is:" , sample)
+
