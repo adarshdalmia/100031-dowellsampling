@@ -5,6 +5,8 @@ from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse, HttpResponse
 import json
 import requests
+
+from API.functions.ppsSampling import dowellppsSampling
 from API.functions.quotaSampling import dowellQuotaSampling
 from API.functions.API_Key_System import processApikey
 from API.functions.stratifiedSampling import dowellStratifiedSampling
@@ -64,6 +66,18 @@ def get_YI_data():
     data = response["finalOutput"]
     return data
 
+
+def get_YI_data_new():
+    hardcoded_data = [
+        "Apple", "Banana", "Cherry", "Date", "Fig",
+        "Grape", "Kiwi", "Lemon", "Mango", "Orange",
+        "Peach", "Pear", "Quince", "Raspberry", "Strawberry",
+        "Watermelon", "Blueberry", "Pineapple", "Pomegranate", "Guava",
+        "Jackfruit", "Apricot", "Avocado", "Blackberry", "Blackcurrant",
+        "Coconut", "Custard apple", "Dragonfruit", "Durian", "Elderberry",
+        "Feijoa", "Gooseberry", "Grapefruit", "Honeyberry", "Huckleberry",
+    ]
+    return hardcoded_data
 
 def get_YI_data_systematic():
     hardcoded_data = [
@@ -137,15 +151,15 @@ def systematic_sampling(request, api_key):
 
             else:
                 return JsonResponse({
-                        "success": False,
-                        "message": data_count['message'],
-                        "credits": data_count['total_credits']
-                    })
+                    "success": False,
+                    "message": data_count['message'],
+                    "credits": data_count['total_credits']
+                })
         else:
             return JsonResponse({
-                    "success": False,
-                    "message": data_count['message']
-                })
+                "success": False,
+                "message": data_count['message']
+            })
 
     return JsonResponse({"error": "Invalid request method."})
 
@@ -214,16 +228,16 @@ def simple_random_sampling(request, api_key):
 
             else:
                 return JsonResponse({
-                        "success": False,
-                        "message": data_count['message'],
-                        "credits": data_count['total_credits']
-                    })
+                    "success": False,
+                    "message": data_count['message'],
+                    "credits": data_count['total_credits']
+                })
 
         else:
             return JsonResponse({
-                    "success": False,
-                    "message": data_count['message']
-                })
+                "success": False,
+                "message": data_count['message']
+            })
 
     return JsonResponse({"error": "Invalid request method."})
 
@@ -291,15 +305,15 @@ def purposive_sampling(request, api_key):
 
             else:
                 return JsonResponse({
-                        "success": False,
-                        "message": data_count['message'],
-                        "credits": data_count['total_credits']
-                    })
+                    "success": False,
+                    "message": data_count['message'],
+                    "credits": data_count['total_credits']
+                })
         else:
             return JsonResponse({
-                    "success": False,
-                    "message": data_count['message']
-                })
+                "success": False,
+                "message": data_count['message']
+            })
 
     return JsonResponse({"error": "Invalid request method."})
 
@@ -360,16 +374,16 @@ def cluster_sampling(request, api_key):
 
             else:
                 return JsonResponse({
-                "success": False,
-                "message": data_count['message'],
-                "credits": data_count['total_credits']
-            })
+                    "success": False,
+                    "message": data_count['message'],
+                    "credits": data_count['total_credits']
+                })
 
         else:
             return JsonResponse({
-            "success": False,
-            "message": data_count['message']
-        })
+                "success": False,
+                "message": data_count['message']
+            })
 
     return JsonResponse({"error": "Invalid request method."})
 
@@ -494,14 +508,74 @@ def quota_sampling(request, api_key):
                     return JsonResponse({"error": str(e)})
             else:
                 return JsonResponse({
-                        "success": False,
-                        "message": data_count['message'],
-                        "credits": data_count['total_credits']
-                    })
+                    "success": False,
+                    "message": data_count['message'],
+                    "credits": data_count['total_credits']
+                })
         else:
             return JsonResponse({
+                "success": False,
+                "message": data_count['message']
+            })
+
+    return JsonResponse({"error": "Invalid request method."})
+
+
+@csrf_exempt
+def pps_sampling(request, api_key):
+    if request.method == "POST":
+        validate_api_count = processApikey(api_key)
+        data_count = json.loads(validate_api_count)
+        if data_count['success']:
+            if data_count['total_credits'] >= 0:
+
+                try:
+                    json_data = request.POST.get('json_data')
+                    data = json.loads(json_data)
+                    print("data", data)
+                    inserted_id = data.get("insertedId")
+                    population_size = data.get("population_size")
+                    size = data.get("size")
+
+                    if data["data"] == "api":
+                        Yi = get_YI_data_new()
+                    elif data["data"] == "upload":
+                        uploaded_file = request.FILES.get("file")
+                        if uploaded_file:
+                            df = pd.read_excel(uploaded_file)
+                            list_of_lists = df.values.T.tolist()
+                            Yi = list_of_lists
+                        else:
+                            return JsonResponse({"error": "No file uploaded."})
+                    else:
+                        return JsonResponse({"error": "Invalid data option."})
+
+                    ppsSamplingInputs = {
+                        "population_units": Yi,
+                        "population_size": population_size,
+                        "size": size
+                    }
+                    # print(ppsSamplingInputs)
+
+                    samples, process_time = dowellppsSampling(ppsSamplingInputs)
+                    print(samples)
+                    # id = get_event_id()  # Make sure you have a function for this
+                    response = {"samples": samples}
+                    return JsonResponse({"samples": samples})
+
+
+                except Exception as e:
+                    return JsonResponse({"error": str(e)})
+            else:
+                return JsonResponse({
                     "success": False,
-                    "message": data_count['message']
+                    "message": data_count['message'],
+                    "credits": data_count['total_credits']
                 })
+        else:
+            return JsonResponse({
+                "success": False,
+                "message": data_count['message']
+            })
 
     return JsonResponse({"error": "Invalid request method."})
