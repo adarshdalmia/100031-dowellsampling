@@ -89,9 +89,9 @@ def get_YI_data_systematic():
     return hardcoded_data
 
 
-def get_YI_data_simplerandom():
-    hardcoded_data = [11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25]
-    return hardcoded_data
+# def get_YI_data_simplerandom():
+#     hardcoded_data = [11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25]
+#     return hardcoded_data
 
 
 @csrf_exempt
@@ -186,7 +186,8 @@ def simple_random_sampling(request, api_key):
                     data_type = data.get("data")
 
                     if data_type == "api":
-                        Yi = get_YI_data_simplerandom()
+                        # Yi = get_YI_data_simplerandom()
+                        Yi = get_YI_data_new()
 
                     elif data_type == "upload":
                         uploaded_file = request.FILES.get('file')
